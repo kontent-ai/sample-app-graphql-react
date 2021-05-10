@@ -22,7 +22,7 @@ export default function App() {
             renders the first one that matches the current URL. */}
         <Switch>
           <Route path="/">
-            <Home itemCodename="main_content" />
+            <Home itemCodename="homepage" />
           </Route>
         </Switch>
       </div>
