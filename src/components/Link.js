@@ -17,19 +17,20 @@ function Link(props) {
     ...other
   } = props;
 
-  const pathname = typeof href === "string" ? href : href.pathname;
-  let match = useRouteMatch(pathname);
+  const absoluteLink = href.startsWith("/") ? href : `/${href}`
+
+  let match = useRouteMatch(absoluteLink);
 
   const className = clsx(classNameProps, {
     [activeClassName]: match && activeClassName,
   });
-
+  
   if (naked) {
-    return <RouterLink className={className} ref={innerRef} to={href} href={href} {...other} />;
+    return <RouterLink className={className} ref={innerRef} to={absoluteLink} {...other}/>;
   }
 
   return (
-    <MuiLink component={RouterLink} className={className} ref={innerRef} to={href} href={href} {...other} />
+    <MuiLink component={RouterLink} className={className} ref={innerRef} to={absoluteLink} {...other}/>
   );
 }
 

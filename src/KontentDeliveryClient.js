@@ -14,18 +14,73 @@ async function fetchKontentItem(itemCodename, depth) {
   return response.item;
 }
 
+async function fetchKontentItemWithLinkedItems(itemCodename, depth) {
+  const response = await deliveryClient
+      .item(itemCodename)
+      .depthParameter(depth)
+      .toPromise();
+
+  return {item: response.item, linkedItems: response.linkedItems};
+}
+
+async function fetchKontentItemsByCodenames(itemCodenames, depth) {
+  const response = await deliveryClient
+      .items()
+      .inFilter("system.codename", itemCodenames)
+      .depthParameter(depth)
+      .toPromise();
+
+  return {
+    items: response.items.reduce((map, obj) => {
+      map[obj.system.codename] = obj;
+      return map;
+      }, {}),
+    linkedItems: response.linkedItems}
+}
+
+async function fetchBlogPostByUrlSlug(slug) {
+  const response = await deliveryClient
+      .items()
+      .type("post")
+      .equalsFilter("elements.slug", slug)
+      .toPromise();
+
+  return {item: response.items.find(item => item.slug.value === slug), linkedItems: response.linkedItems};
+}
+
 async function fetchListingSectionRelatedData(listingSection) {
-  const linkedItemsResponse = await deliveryClient.items()
+  return await deliveryClient
+      .items()
       .type(listingSection.content_type.value)
       .orderByDescending(listingSection.order_by.value)
       .limitParameter(listingSection.number_of_items.value)
       .toPromise();
+}
 
-  return linkedItemsResponse;
+async function fetchItemsByContentType(contentType) {
+  const result = await deliveryClient
+      .items()
+      .type(contentType)
+      .toPromise();
+
+  return result.items;
+}
+
+async function fetchNavigationData() {
+  const navigationData = await deliveryClient
+      .items()
+      .type("navigation_item")
+      .toPromise();
+
+  return navigationData.items.reduce((map, obj) => {
+    map[obj.slug.value] = obj;
+    return map;
+  }, {})
 }
 
 async function getSitemapMappings() {
-  const data = await deliveryClient.item("homepage")
+  const data = await deliveryClient
+      .item("homepage")
       .depthParameter(3) // depends on the sitemap level (+1 for content type to download)
       .elementsParameter(["subpages", "slug", "content", "content_type"])
       .toPromise()
@@ -115,6 +170,11 @@ async function getSubPaths(data, pagesCodenames, parentSlug) {
 
 export {
   fetchKontentItem,
+  fetchKontentItemWithLinkedItems,
+  fetchKontentItemsByCodenames,
   fetchListingSectionRelatedData,
+  fetchItemsByContentType,
+  fetchNavigationData,
+  fetchBlogPostByUrlSlug,
   getSitemapMappings
 };

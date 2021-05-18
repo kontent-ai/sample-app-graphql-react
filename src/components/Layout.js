@@ -1,6 +1,5 @@
 import { Box, makeStyles } from "@material-ui/core";
 import { Header } from ".";
-import get from 'lodash.get';
 import { Helmet } from 'react-helmet-async';
 import React from 'react';
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
@@ -17,25 +16,19 @@ const useStyles = makeStyles((_theme) => ({
 
 function Layout(props) {
     const classes = useStyles();
-    const favicon = get(props, "item.favicon.value[0].url", null);
-    const description = get(props, "seo.description", null); // pageProps
-    const keyWords = get(props, "seo.keywords", null); // pageProps
-    const canonicalUrl = get(props, "seo.canonicalUrl", null); // pageProps
-    const noIndex = get(props, "seo.noIndex", null); // pageProps
-    const font = get(props, "item.font.value[0].codename", null);
-    const fontName = font === "nunito_sans"
-                     ? "Nunito Sans"
-                     : font === "fira_sans"
-                       ? "Fira Sans"
-                       : "Arial";
-
-    let title = get(props, "item.title.value", "");
-    if (title) {
-        title += " | ";
-    }
-    title += get(props, "seo.title", null); //pageprops
-
-    const palette = (get(props, "item.palette.value[0].codename", null));
+    const {
+        favicon,
+        font,
+        palette
+    } = props.siteConfiguration;
+    const {
+        description,
+        keyWords,
+        canonicalUrl,
+        noIndex
+    } = props.seo;
+    const fontName = font === "nunito_sans" ? "Nunito Sans" : font === "fira_sans" ? "Fira Sans" : "Arial";
+    const title = props.siteConfiguration.title && props.seo.title ? `${props.siteConfiguration.title} | ${props.seo.title}` : props.siteConfiguration.title
     const colors = {
         primary: "#F05A22",
         secondary: "#B72929"
@@ -133,7 +126,7 @@ function Layout(props) {
           <ThemeProvider theme={theme}>
               <CssBaseline />
               <Box display="flex" flexDirection="column" alignItems="stretch" alignContent="space-between" className={classes.root}>
-                  <Header {...props} />
+                  <Header {...props.siteConfiguration} />
                   <main className={classes.flex}>
                       {props.children}
                   </main>

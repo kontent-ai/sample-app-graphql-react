@@ -39,7 +39,7 @@ const SideDrawer = (props) => {
       <List component="nav">
         {props.navLinks.map((navigationItem, index) => (
           <ListItem key={index} >
-            <Action action={navigationItem} {...props} />
+            <Action action={navigationItem} />
           </ListItem>
         ))}
       </List>

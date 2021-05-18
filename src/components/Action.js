@@ -3,7 +3,7 @@ import { Button } from "@material-ui/core";
 import { Link, Icon } from ".";
 
 function Action(props) {
-  const { action, mappings } = props;
+  const { action } = props;
   const navigationItem = get(action, "navigation_item.value[0]", null);
   const href = navigationItem.system.type === "external_url" ?
                get(navigationItem, "url.value") : get(navigationItem, "slug.value");
