@@ -1,8 +1,8 @@
 import { DeliveryClient } from '@kentico/kontent-delivery';
+import { getUrlSlug } from './utils';
 
 const deliveryClient = new DeliveryClient({
   projectId: 'ad25961e-f934-01dc-e1fa-f4dd41b84df2',
-  //projectId: '30151ff3-f65b-003e-5e7a-4fa6460c47b4',
 });
 
 async function fetchKontentItem(itemCodename, depth) {
@@ -38,16 +38,6 @@ async function fetchKontentItemsByCodenames(itemCodenames, depth) {
     linkedItems: response.linkedItems}
 }
 
-async function fetchBlogPostByUrlSlug(slug) {
-  const response = await deliveryClient
-      .items()
-      .type("post")
-      .equalsFilter("elements.slug", slug)
-      .toPromise();
-
-  return {item: response.items.find(item => item.slug.value === slug), linkedItems: response.linkedItems};
-}
-
 async function fetchListingSectionRelatedData(listingSection) {
   return await deliveryClient
       .items()
@@ -66,18 +56,6 @@ async function fetchItemsByContentType(contentType) {
   return result.items;
 }
 
-async function fetchNavigationData() {
-  const navigationData = await deliveryClient
-      .items()
-      .type("navigation_item")
-      .toPromise();
-
-  return navigationData.items.reduce((map, obj) => {
-    map[obj.slug.value] = obj;
-    return map;
-  }, {})
-}
-
 async function getSitemapMappings() {
   const data = await deliveryClient
       .item("homepage")
@@ -89,17 +67,25 @@ async function getSitemapMappings() {
   const rootSlug = [];
   const pathsFromKontent = [
     {
-      params: {
-        slug: rootSlug,
-        navigationItem: data.item.system, // will be ignored by next in getContentPaths
-        contentItem: data.modular_content[data.item.elements.content.value[0]].system // will be ignored by next in getContentPaths
-      }
+      slug: rootSlug,
+      codename: data.item.system.codename,
+      type: data.modular_content[data.item.elements.content.value[0]].system.type
     }
   ];
 
   const subPaths = await getSubPaths(data, data.item.elements.subpages.value, rootSlug);
 
-  return pathsFromKontent.concat(...subPaths);
+  const mappings = pathsFromKontent.concat(...subPaths);
+
+  return mappings.reduce((result, item) => {
+    result[getUrlSlug(item.slug)] = {
+      codename: item.codename,
+      type: item.type
+    };
+
+    return result;
+  },{});
+
 }
 
 function getRawKontentItemSingleResult(response) {
@@ -133,11 +119,9 @@ async function getSubPaths(data, pagesCodenames, parentSlug) {
     const currentItemContentWrapper = data.modular_content[currentItem.elements.content.value[0]];
 
     paths.push({
-      params: {
-        slug: pageSlug,
-        navigationItem: currentItem.system, // will be ignored by next in getContentPaths
-        contentItem: currentItemContentWrapper.system // will be ignored by next in getContentPaths
-      }
+      slug: pageSlug,
+      codename: currentItem.system.codename,
+      type: currentItemContentWrapper.system.type
     });
 
     // Listing pages
@@ -151,12 +135,9 @@ async function getSubPaths(data, pagesCodenames, parentSlug) {
       subItemsData.items.forEach(subItem => {
         const subItemSlug = pageSlug.concat(subItem.elements.slug.value);
         paths.push({
-          params: {
-            slug: subItemSlug,
-            navigationItem: subItem.system, // will be ignored by next in getContentPaths
-            // Listing items contains navigation and content item in one content model
-            contentItem: subItem.system // will be ignored by next in getContentPaths
-          }
+          slug: subItemSlug,
+          codename: subItem.system.codename,
+          type: subItem.system.type
         });
       });
     }
@@ -174,7 +155,5 @@ export {
   fetchKontentItemsByCodenames,
   fetchListingSectionRelatedData,
   fetchItemsByContentType,
-  fetchNavigationData,
-  fetchBlogPostByUrlSlug,
   getSitemapMappings
 };

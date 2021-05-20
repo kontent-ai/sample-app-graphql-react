@@ -5,7 +5,8 @@ import { Layout, UnknownComponent } from "./components";
 import { Container, Grid, makeStyles, Paper } from "@material-ui/core";
 import thumbnailLayouts from "./components/thumbnails";
 import { useEffect, useState } from 'react';
-import { fetchItemsByContentType } from './KontentDeliveryClient';
+import { fetchItemsByContentType, fetchKontentItem } from './KontentDeliveryClient';
+import getSeoData from './utils/getSeoData';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -23,18 +24,27 @@ function ListingPage(props) {
   const classes = useStyles();
 
   const [relatedItems, setRelatedItems] = useState([]);
+  const [seo, setSeo] = useState({ });
 
   useEffect( () => {
       async function fetchDeliverData() {
-          const relatedData = await fetchItemsByContentType(props.contentType);
+          const item = await fetchKontentItem(props.codename, 1);
+          const contentType = get(item, "content.value[0].content_type.value", null);
+
+          const relatedData = await fetchItemsByContentType(contentType);
           setRelatedItems(relatedData);
+          setSeo(getSeoData(item));
       }
 
       fetchDeliverData();
-  }, [props.contentType]);
+  }, [props.codename]);
+
+    if (!relatedItems) {
+        return "loading...";
+    }
 
   return (
-      <Layout {...props}>
+      <Layout {...props} seo={seo}>
         <Container className={classes.root}>
           {relatedItems.length > 0 &&
           <Grid container spacing={4} alignItems="stretch">

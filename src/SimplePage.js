@@ -4,6 +4,7 @@ import { Container, makeStyles, Typography, useTheme } from "@material-ui/core";
 import React, { useEffect, useState } from 'react';
 import { fetchKontentItemWithLinkedItems } from './KontentDeliveryClient';
 import LandingPage from './LandingPage';
+import getSeoData from './utils/getSeoData';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -15,13 +16,14 @@ function SimplePage(props) {
     const classes = useStyles();
 
     const [page, setPage] = useState(null);
+    const [seo, setSeo] = useState({ });
     const [linkedItems, setLinkedItems] = useState(null);
 
     useEffect( () => {
         async function fetchDeliverData() {
             const pageData = await fetchKontentItemWithLinkedItems(props.codename, 3);
-
-            setPage(pageData.item);
+            setPage(get(pageData, "item.content.value[0]", null));
+            setSeo(getSeoData(pageData.item));
             setLinkedItems(pageData.linkedItems);
         }
 
@@ -36,7 +38,7 @@ function SimplePage(props) {
     }
 
     return (
-        <Layout {...props}>
+        <Layout {...props} seo={seo}>
             <Container className={classes.root} maxWidth="md">
                 {get(page, "title.value", null) && (
                     <Typography variant="h1">{get(page, "title.value", null)}</Typography>

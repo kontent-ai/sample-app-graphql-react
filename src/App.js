@@ -4,15 +4,17 @@ import {
   Route,
 } from "react-router-dom";
 import React, { useEffect, useState } from 'react';
-import { fetchKontentItem, fetchNavigationData, getSitemapMappings } from './KontentDeliveryClient';
+import { fetchKontentItem, getSitemapMappings } from './KontentDeliveryClient';
 import get from 'lodash.get';
 import Post from './Post';
-import Page from './components/Page';
+import { getUrlSlug } from './utils';
+import LandingPage from './LandingPage';
+import ListingPage from './ListingPage';
+import SimplePage from './SimplePage';
+import { UnknownComponent } from './components';
 
 export default function App() {
   const [mappings, setMappings] = useState(null);
-  const [homepageData, setHomepageData] = useState(null);
-  const [navigationData, setNavigationData] = useState({});
   const [siteConfiguration, setSiteConfiguration] = useState({
     asset: null,
     title: null,
@@ -24,7 +26,6 @@ export default function App() {
   useEffect( () => {
     async function fetchDeliverData() {
       const mappings = await getSitemapMappings();
-      const navigationData = await fetchNavigationData();
       const homepage = await fetchKontentItem("homepage", 3);
 
       setSiteConfiguration({
@@ -34,25 +35,66 @@ export default function App() {
         favicon: get(homepage, "favicon.value[0].url", null),
         font: get(homepage, "font.value[0].codename", null),
         palette: get(homepage, "palette.value[0].codename", null)});
-      setNavigationData(navigationData);
-      setHomepageData(homepage);
       setMappings(mappings);
     }
 
     fetchDeliverData();
   }, []);
 
+  if(!mappings) {
+    return "loading...";
+  }
+
   return (
-    <Router basename="/">
+    <Router>
       <Switch>
-        <Route exact path="/">
-          <Page item={homepageData} siteConfiguration={siteConfiguration} mappings={mappings} />
-        </Route>
-        <Route path="/blog/:slug" render={({match}) => <Post slug={match.params.slug} siteConfiguration={siteConfiguration} mappings={mappings} />}/>
-        <Route path="/:slug" render={({match}) => <Page item={navigationData[match.params.slug]} siteConfiguration={siteConfiguration} mappings={mappings} />}/>
+        <Route path="/" render={renderPage}/>
       </Switch>
     </Router>
   );
 
+  function renderPage({ location }){
+    const navigationItem = mappings[getUrlSlug(location.pathname)];
 
+    if(!navigationItem) {
+      if (process.env.NODE_ENV === "development") {
+        console.error(`Unknown navigation item pathname: ${location.pathname}`);
+        return (
+            <div>
+              <h2>Not found</h2>
+              <pre>{JSON.stringify(mappings, undefined, 2)}</pre>
+            </div>
+        );
+      }
+      return <h2>Not found</h2>;
+    }
+
+    const {
+      codename,
+      type
+    } = navigationItem;
+
+    switch (type) {
+      case "landing_page":
+        return <LandingPage codename={codename} siteConfiguration={siteConfiguration} mappings={mappings} /> ;
+      case "listing_page":
+        return <ListingPage codename={codename} siteConfiguration={siteConfiguration} mappings={mappings} />;
+      case "simple_page":
+        return <SimplePage codename={codename} siteConfiguration={siteConfiguration} mappings={mappings} />;
+      case "post":
+        return <Post codename={codename} siteConfiguration={siteConfiguration} mappings={mappings} />;
+      default:
+        if (process.env.NODE_ENV === "development") {
+          console.error(`Unknown navigation item content type: ${type}`);
+          return (
+              <UnknownComponent>
+                <pre>{JSON.stringify(mappings, undefined, 2)}</pre>
+              </UnknownComponent>
+          );
+        }
+        return null;
+    }
+  }
 }
+
+

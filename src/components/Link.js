@@ -6,6 +6,7 @@ import {
   useRouteMatch
 } from "react-router-dom";
 import MuiLink from "@material-ui/core/Link";
+import { getUrlSlug } from '../utils';
 
 function Link(props) {
   const {
@@ -17,14 +18,14 @@ function Link(props) {
     ...other
   } = props;
 
-  const absoluteLink = href.startsWith("/") ? href : `/${href}`
+  const absoluteLink = getUrlSlug(href);
 
   let match = useRouteMatch(absoluteLink);
 
   const className = clsx(classNameProps, {
     [activeClassName]: match && activeClassName,
   });
-  
+
   if (naked) {
     return <RouterLink className={className} ref={innerRef} to={absoluteLink} {...other}/>;
   }

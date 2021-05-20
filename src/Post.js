@@ -2,7 +2,7 @@ import get from "lodash.get";
 import { Image, Layout, RichText, UnknownComponent } from "./components";
 import { Container, makeStyles, Typography, useTheme } from "@material-ui/core";
 import { useEffect, useState } from 'react';
-import { fetchBlogPostByUrlSlug } from './KontentDeliveryClient';
+import { fetchKontentItemWithLinkedItems } from './KontentDeliveryClient';
 import getSeoData from './utils/getSeoData';
 
 const useStyles = makeStyles((theme) => ({
@@ -13,27 +13,29 @@ const useStyles = makeStyles((theme) => ({
 
 function Post(props) {
     const [post, setPost] = useState(null);
+    const [seo, setSeo] = useState({ });
     const [linkedItems, setLinkedItems] = useState(null);
     const classes = useStyles();
     const theme = useTheme();
     const imageSizes = `${theme.breakpoints.values.md}px`;
     useEffect( () => {
         async function fetchDeliverData() {
-            const post = await fetchBlogPostByUrlSlug(props.slug);
+            const post = await fetchKontentItemWithLinkedItems(props.codename, 1);
 
             setPost(post.item);
+            setSeo(getSeoData(post.item));
             setLinkedItems(post.linkedItems);
         }
 
         fetchDeliverData();
-    }, [props.slug]);
+    }, [props.codename]);
 
     if (!post || !linkedItems) {
         return "loading...";
     }
 
     return (
-        <Layout {...props} seo={getSeoData(post)}>
+        <Layout {...props} seo={seo}>
             <Container className={classes.root} maxWidth="md">
                 {get(post, "title.value", null) && (
                     <Typography variant="h1">{get(post, "title.value", null)}</Typography>

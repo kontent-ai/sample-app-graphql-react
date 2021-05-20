@@ -53,7 +53,7 @@ function RichText(props) {
       linkedItems={linkedItems}
       mappings={mappings}
       resolveLinkedItem={(linkedItem, domNode, domToReact) => {
-        switch (linkedItem.system.type) {
+        switch (linkedItem?.system.type) {
           case "quote":
             return (
               <blockquote className={classes.quote}>

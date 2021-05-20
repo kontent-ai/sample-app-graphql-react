@@ -5,7 +5,8 @@ import { Layout, UnknownComponent } from "./components";
 import sections from "./components/sections";
 import { Box, makeStyles } from "@material-ui/core";
 import { useEffect, useState } from 'react';
-import { fetchKontentItemsByCodenames } from './KontentDeliveryClient';
+import { fetchKontentItem, fetchKontentItemsByCodenames } from './KontentDeliveryClient';
+import getSeoData from './utils/getSeoData';
 
 const useStyles = makeStyles((theme) => ({
     sections: {
@@ -18,31 +19,34 @@ const useStyles = makeStyles((theme) => ({
 
 function LandingPage(props) {
     const classes = useStyles();
-    const sectionItemCodenames = get(props.content, "sections.itemCodenames", []);
 
-    const [sectionItemsByCodename, setSectionItems] = useState(null);
+    const [sectionItems, setSectionItems] = useState(null);
+    const [seo, setSeo] = useState({ });
     const [linkedItems, setLinkedItems] = useState(null);
 
     useEffect( () => {
         async function fetchDeliverData() {
+            const item = await fetchKontentItem(props.codename, 1);
+            setSeo(getSeoData(item));
+            const sectionItemCodenames = get(item, "content.value[0].sections.itemCodenames", []);
+
             const sectionItems = await fetchKontentItemsByCodenames(sectionItemCodenames, 3);
 
-            setSectionItems(sectionItems.items);
+            setSectionItems(sectionItemCodenames.map(section => sectionItems.items[section]));
             setLinkedItems(sectionItems.linkedItems);
         }
 
         fetchDeliverData();
-    }, [props.content]);
+    }, [props.codename]);
 
-    if(!sectionItemsByCodename) {
+    if(!sectionItems) {
         return "loading...";
     }
 
     return (
-        <Layout {...props}>
+        <Layout {...props} seo={seo}>
             <Box className={classes.sections}>
-                {sectionItemCodenames.map((sectionCodename, index) => {
-                    const section = sectionItemsByCodename[sectionCodename];
+                {sectionItems.map((section, index) => {
                     const contentType = upperFirst(camelCase(get(section, "system.type", null)));
                     const Component = sections[contentType];
 
