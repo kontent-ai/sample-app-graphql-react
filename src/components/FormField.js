@@ -22,16 +22,16 @@ function FormField(props) {
 
   let fieldComponent;
 
-  if (field.system.type === "base_form_field") {
+  if (field.system.type.system.codename === "base_form_field") {
 
-    const isTextArea = get(field, "type.value[0].codename") === "textarea";
-    const isCheckbox = get(field, "type.value[0].codename") === "checkbox";
+    const isTextArea = get(field, "type[0].system.codename") === "textarea";
+    const isCheckbox = get(field, "type[0].system.codename") === "checkbox";
     if (isCheckbox) {
       fieldComponent = (
         <FormGroup className={classes.checkbox}>
           <FormControlLabel
-            control={<Checkbox name={get(field, "name.value", null)} />}
-            label={get(field, "label.value", null)}
+            control={<Checkbox name={get(field, "name", null)} />}
+            label={get(field, "label", null)}
           />
         </FormGroup>
 
@@ -40,31 +40,31 @@ function FormField(props) {
     else {
       fieldComponent = (
         <TextField
-          type={get(field, "type.value[0].codename")}
+          type={get(field, "type[0].system.codename")}
           multiline={isTextArea ? true : false}
           rows={isTextArea ? 4 : undefined}
-          label={get(field, "label.value", null)}
-          placeholder={get(field, "default_value.value", null)}
-          required={get(field, "configuration.value", []).some(config => config.codename === "required")}
-          name={get(field, "name.value", null)}
+          label={get(field, "label", null)}
+          placeholder={get(field, "defaultValue", null)}
+          required={get(field, "configuration", []).some(config => config.system.codename === "required")}
+          name={get(field, "name", null)}
           className={`${classes.formControl} ${isTextArea ? classes.textArea : null}`}
         />
 
       );
     }
   }
-  else if (field.system.type === "select_form_field") {
+  else if (field.system.type.system.codename === "select_form_field") {
     fieldComponent = (
       <FormControl
         className={classes.formControl}>
-        <InputLabel id="demo-simple-select-label">{get(field, "label.value")}</InputLabel>
+        <InputLabel id="demo-simple-select-label">{get(field, "label")}</InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           value=''
         >
-          {get(field, "options.value", []).map(option => (
-            <MenuItem key={get(option, "value.value")} value={get(option, "value.value")}>{get(option, "label.value")}</MenuItem>
+          {get(field, "options.items", []).map(option => (
+            <MenuItem key={get(option, "value")} value={get(option, "value")}>{get(option, "label")}</MenuItem>
           ))}
         </Select>
       </FormControl>

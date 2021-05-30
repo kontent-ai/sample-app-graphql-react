@@ -1,0 +1,678 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: RootQuery
+}
+
+interface Item {
+    system: Sys!
+}
+
+type Action implements Item {
+    icon(limit: Int = 10, offset: Int = 0): ItemsCollection!
+    label: String!
+    navigationItem(limit: Int = 10, offset: Int = 0): ItemsCollection!
+    options: [MultipleChoiceOption!]!
+    role: [MultipleChoiceOption!]!
+    system: Sys!
+}
+
+type ActionCollection {
+    items: [Action!]!
+    limit: Int!
+    offset: Int!
+}
+
+type Asset {
+    description: String
+    imageId: String
+    name: String
+    size: Int
+    type: String
+    url: String!
+}
+
+type AssetCollection {
+    items: [Asset!]!
+    limit: Int!
+    offset: Int!
+}
+
+type Author implements Item {
+    bio: String!
+    firstName: String!
+    lastName: String!
+    photo: [Asset!]!
+    system: Sys!
+}
+
+type AuthorCollection {
+    items: [Author!]!
+    limit: Int!
+    offset: Int!
+}
+
+type BaseFormField implements Item {
+    configuration: [MultipleChoiceOption!]!
+    defaultValue: String!
+    label: String!
+    name: String!
+    system: Sys!
+    type: [MultipleChoiceOption!]!
+}
+
+type BaseFormFieldCollection {
+    items: [BaseFormField!]!
+    limit: Int!
+    offset: Int!
+}
+
+type CodeBlock implements Item {
+    code: RichText!
+    system: Sys!
+}
+
+type CodeBlockCollection {
+    items: [CodeBlock!]!
+    limit: Int!
+    offset: Int!
+}
+
+type Collection {
+    system: CollectionSys!
+}
+
+type CollectionSys {
+    codename: String!
+    name: String!
+}
+
+type ContactSection implements Item {
+    content: RichText!
+    form(limit: Int = 10, offset: Int = 0): ItemsCollection!
+    subtitle: RichText!
+    system: Sys!
+    title: String!
+}
+
+type ContactSectionCollection {
+    items: [ContactSection!]!
+    limit: Int!
+    offset: Int!
+}
+
+type ContentSection implements Item {
+    actions(limit: Int = 10, offset: Int = 0): ItemsCollection!
+    content: RichText!
+    image: [Asset!]!
+    system: Sys!
+    title: String!
+}
+
+type ContentSectionCollection {
+    items: [ContentSection!]!
+    limit: Int!
+    offset: Int!
+}
+
+type ContentType {
+    system: ContentTypeSys!
+}
+
+type ContentTypeSys {
+    codename: String!
+    name: String!
+}
+
+type CtaSection implements Item {
+    action(limit: Int = 10, offset: Int = 0): ItemsCollection!
+    subtitle: RichText!
+    system: Sys!
+    title: String!
+}
+
+type CtaSectionCollection {
+    items: [CtaSection!]!
+    limit: Int!
+    offset: Int!
+}
+
+type ExternalUrl implements Item {
+    system: Sys!
+    url: String!
+}
+
+type ExternalUrlCollection {
+    items: [ExternalUrl!]!
+    limit: Int!
+    offset: Int!
+}
+
+type Feature implements Item {
+    actions(limit: Int = 10, offset: Int = 0): ItemsCollection!
+    content: RichText!
+    image: [Asset!]!
+    system: Sys!
+    title: String!
+}
+
+type FeatureCollection {
+    items: [Feature!]!
+    limit: Int!
+    offset: Int!
+}
+
+type FeaturesSection implements Item {
+    features(limit: Int = 10, offset: Int = 0): ItemsCollection!
+    subtitle: RichText!
+    system: Sys!
+    title: String!
+}
+
+type FeaturesSectionCollection {
+    items: [FeaturesSection!]!
+    limit: Int!
+    offset: Int!
+}
+
+type Form implements Item {
+    content: String!
+    fields(limit: Int = 10, offset: Int = 0): ItemsCollection!
+    formAction: String!
+    formId: String!
+    submitLabel: String!
+    system: Sys!
+    title: String!
+}
+
+type FormCollection {
+    items: [Form!]!
+    limit: Int!
+    offset: Int!
+}
+
+type HeroSection implements Item {
+    actions(limit: Int = 10, offset: Int = 0): ItemsCollection!
+    content: RichText!
+    image: [Asset!]!
+    system: Sys!
+    title: String!
+}
+
+type HeroSectionCollection {
+    items: [HeroSection!]!
+    limit: Int!
+    offset: Int!
+}
+
+type Homepage implements Item {
+    content(limit: Int = 10, offset: Int = 0): ItemsCollection!
+    copyright: RichText!
+    favicon: [Asset!]!
+    font: [MultipleChoiceOption!]!
+    headerLogo: [Asset!]!
+    label: String!
+    mainMenu(limit: Int = 10, offset: Int = 0): ItemsCollection!
+    palette: [MultipleChoiceOption!]!
+    seoCanonicalUrl: String!
+    seoDescription: String!
+    seoKeywords: String!
+    seoOptions: [MultipleChoiceOption!]!
+    seoTitle: String!
+    slug: String!
+    subpages(limit: Int = 10, offset: Int = 0): ItemsCollection!
+    system: Sys!
+    title: String!
+}
+
+type HomepageCollection {
+    items: [Homepage!]!
+    limit: Int!
+    offset: Int!
+}
+
+type Icon implements Item {
+    icon: [MultipleChoiceOption!]!
+    iconPosition: [MultipleChoiceOption!]!
+    system: Sys!
+}
+
+type IconCollection {
+    items: [Icon!]!
+    limit: Int!
+    offset: Int!
+}
+
+type ItemsCollection {
+    items: [Item!]!
+    limit: Int!
+    offset: Int!
+}
+
+type LandingPage implements Item {
+    sections(limit: Int = 10, offset: Int = 0): ItemsCollection!
+    system: Sys!
+    title: String!
+}
+
+type LandingPageCollection {
+    items: [LandingPage!]!
+    limit: Int!
+    offset: Int!
+}
+
+type Language {
+    system: LanguageSys!
+}
+
+type LanguageSys {
+    codename: String!
+    name: String!
+}
+
+type ListingPage implements Item {
+    contentType: String!
+    system: Sys!
+    title: String!
+}
+
+type ListingPageCollection {
+    items: [ListingPage!]!
+    limit: Int!
+    offset: Int!
+}
+
+type ListingSection implements Item {
+    contentType: String!
+    numberOfItems: Float!
+    orderBy: String!
+    subtitle: RichText!
+    system: Sys!
+    title: String!
+}
+
+type ListingSectionCollection {
+    items: [ListingSection!]!
+    limit: Int!
+    offset: Int!
+}
+
+type Menu implements Item {
+    actions(limit: Int = 10, offset: Int = 0): ItemsCollection!
+    label: String!
+    system: Sys!
+}
+
+type MenuCollection {
+    items: [Menu!]!
+    limit: Int!
+    offset: Int!
+}
+
+type MultipleChoiceOption {
+    system: MultipleChoiceOptionSys!
+}
+
+type MultipleChoiceOptionSys {
+    codename: String!
+    name: String!
+}
+
+type NavigationItem implements Item {
+    content(limit: Int = 10, offset: Int = 0): ItemsCollection!
+    label: String!
+    seoCanonicalUrl: String!
+    seoDescription: String!
+    seoKeywords: String!
+    seoOptions: [MultipleChoiceOption!]!
+    seoTitle: String!
+    slug: String!
+    subpages(limit: Int = 10, offset: Int = 0): ItemsCollection!
+    system: Sys!
+}
+
+type NavigationItemCollection {
+    items: [NavigationItem!]!
+    limit: Int!
+    offset: Int!
+}
+
+type Post implements Item {
+    author(limit: Int = 10, offset: Int = 0): ItemsCollection!
+    content: RichText!
+    excerpt: String!
+    image: [Asset!]!
+    publishingDate: DateTime!
+    seoCanonicalUrl: String!
+    seoDescription: String!
+    seoKeywords: String!
+    seoOptions: [MultipleChoiceOption!]!
+    seoTitle: String!
+    slug: String!
+    subtitle: String!
+    system: Sys!
+    title: String!
+}
+
+type PostCollection {
+    items: [Post!]!
+    limit: Int!
+    offset: Int!
+}
+
+type Quote implements Item {
+    quoteText: String!
+    system: Sys!
+}
+
+type QuoteCollection {
+    items: [Quote!]!
+    limit: Int!
+    offset: Int!
+}
+
+type RichText {
+    allComponents(limit: Int = 10, offset: Int = 0): ItemsCollection!
+    assets(limit: Int = 10, offset: Int = 0): AssetCollection!
+    components(limit: Int = 10, offset: Int = 0): ItemsCollection!
+    html: String!
+    links(limit: Int = 10, offset: Int = 0): ItemsCollection!
+    modularContent(limit: Int = 10, offset: Int = 0): ItemsCollection!
+}
+
+type RootQuery {
+    action(codename: String!, language: LanguageFilter): Action
+    actionCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: ActionWhere): ActionCollection!
+    author(codename: String!, language: LanguageFilter): Author
+    authorCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: AuthorWhere): AuthorCollection!
+    baseFormField(codename: String!, language: LanguageFilter): BaseFormField
+    baseFormFieldCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: BaseFormFieldWhere): BaseFormFieldCollection!
+    codeBlock(codename: String!, language: LanguageFilter): CodeBlock
+    codeBlockCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: CodeBlockWhere): CodeBlockCollection!
+    contactSection(codename: String!, language: LanguageFilter): ContactSection
+    contactSectionCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: ContactSectionWhere): ContactSectionCollection!
+    contentSection(codename: String!, language: LanguageFilter): ContentSection
+    contentSectionCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: ContentSectionWhere): ContentSectionCollection!
+    ctaSection(codename: String!, language: LanguageFilter): CtaSection
+    ctaSectionCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: CtaSectionWhere): CtaSectionCollection!
+    externalUrl(codename: String!, language: LanguageFilter): ExternalUrl
+    externalUrlCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: ExternalUrlWhere): ExternalUrlCollection!
+    feature(codename: String!, language: LanguageFilter): Feature
+    featureCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: FeatureWhere): FeatureCollection!
+    featuresSection(codename: String!, language: LanguageFilter): FeaturesSection
+    featuresSectionCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: FeaturesSectionWhere): FeaturesSectionCollection!
+    form(codename: String!, language: LanguageFilter): Form
+    formCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: FormWhere): FormCollection!
+    heroSection(codename: String!, language: LanguageFilter): HeroSection
+    heroSectionCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: HeroSectionWhere): HeroSectionCollection!
+    homepage(codename: String!, language: LanguageFilter): Homepage
+    homepageCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: HomepageWhere): HomepageCollection!
+    icon(codename: String!, language: LanguageFilter): Icon
+    iconCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: IconWhere): IconCollection!
+    landingPage(codename: String!, language: LanguageFilter): LandingPage
+    landingPageCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: LandingPageWhere): LandingPageCollection!
+    listingPage(codename: String!, language: LanguageFilter): ListingPage
+    listingPageCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: ListingPageWhere): ListingPageCollection!
+    listingSection(codename: String!, language: LanguageFilter): ListingSection
+    listingSectionCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: ListingSectionWhere): ListingSectionCollection!
+    menu(codename: String!, language: LanguageFilter): Menu
+    menuCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: MenuWhere): MenuCollection!
+    navigationItem(codename: String!, language: LanguageFilter): NavigationItem
+    navigationItemCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: NavigationItemWhere): NavigationItemCollection!
+    post(codename: String!, language: LanguageFilter): Post
+    postCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: PostWhere): PostCollection!
+    quote(codename: String!, language: LanguageFilter): Quote
+    quoteCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: QuoteWhere): QuoteCollection!
+    selectFormField(codename: String!, language: LanguageFilter): SelectFormField
+    selectFormFieldCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: SelectFormFieldWhere): SelectFormFieldCollection!
+    selectFormFieldOption(codename: String!, language: LanguageFilter): SelectFormFieldOption
+    selectFormFieldOptionCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: SelectFormFieldOptionWhere): SelectFormFieldOptionCollection!
+    simplePage(codename: String!, language: LanguageFilter): SimplePage
+    simplePageCollection(language: LanguageFilter, limit: Int = 10, offset: Int = 0, where: SimplePageWhere): SimplePageCollection!
+}
+
+type SelectFormField implements Item {
+    configuration: [MultipleChoiceOption!]!
+    defaultValue: String!
+    label: String!
+    name: String!
+    options(limit: Int = 10, offset: Int = 0): ItemsCollection!
+    system: Sys!
+}
+
+type SelectFormFieldCollection {
+    items: [SelectFormField!]!
+    limit: Int!
+    offset: Int!
+}
+
+type SelectFormFieldOption implements Item {
+    label: String!
+    system: Sys!
+    value: String!
+}
+
+type SelectFormFieldOptionCollection {
+    items: [SelectFormFieldOption!]!
+    limit: Int!
+    offset: Int!
+}
+
+type SimplePage implements Item {
+    content: RichText!
+    image: [Asset!]!
+    subtitle: String!
+    system: Sys!
+    title: String!
+}
+
+type SimplePageCollection {
+    items: [SimplePage!]!
+    limit: Int!
+    offset: Int!
+}
+
+type Sys {
+    codename: String!
+    collection: Collection!
+    id: Guid!
+    language: Language!
+    lastModified: DateTime!
+    name: String!
+    type: ContentType!
+    workflowStep: WorkflowStep!
+}
+
+type WorkflowStep {
+    system: WorkflowStepSys!
+}
+
+type WorkflowStepSys {
+    codename: String!
+    name: String!
+}
+
+input ActionWhere {
+    ensureAtLEastOneField: String
+    iconLinksCodename: String
+    labelEq: String
+    navigationItemLinksCodename: String
+}
+
+input AuthorWhere {
+    bioEq: String
+    ensureAtLEastOneField: String
+    firstNameEq: String
+    lastNameEq: String
+}
+
+input BaseFormFieldWhere {
+    defaultValueEq: String
+    ensureAtLEastOneField: String
+    labelEq: String
+    nameEq: String
+}
+
+input CodeBlockWhere {
+    ensureAtLEastOneField: String
+}
+
+input ContactSectionWhere {
+    ensureAtLEastOneField: String
+    formLinksCodename: String
+    titleEq: String
+}
+
+input ContentSectionWhere {
+    actionsLinksCodename: String
+    ensureAtLEastOneField: String
+    titleEq: String
+}
+
+input CtaSectionWhere {
+    actionLinksCodename: String
+    ensureAtLEastOneField: String
+    titleEq: String
+}
+
+input ExternalUrlWhere {
+    ensureAtLEastOneField: String
+    urlEq: String
+}
+
+input FeatureWhere {
+    actionsLinksCodename: String
+    ensureAtLEastOneField: String
+    titleEq: String
+}
+
+input FeaturesSectionWhere {
+    ensureAtLEastOneField: String
+    featuresLinksCodename: String
+    titleEq: String
+}
+
+input FormWhere {
+    contentEq: String
+    ensureAtLEastOneField: String
+    fieldsLinksCodename: String
+    formActionEq: String
+    formIdEq: String
+    submitLabelEq: String
+    titleEq: String
+}
+
+input HeroSectionWhere {
+    actionsLinksCodename: String
+    ensureAtLEastOneField: String
+    titleEq: String
+}
+
+input HomepageWhere {
+    contentLinksCodename: String
+    ensureAtLEastOneField: String
+    labelEq: String
+    mainMenuLinksCodename: String
+    seoCanonicalUrlEq: String
+    seoDescriptionEq: String
+    seoKeywordsEq: String
+    seoTitleEq: String
+    slugEq: String
+    subpagesLinksCodename: String
+    titleEq: String
+}
+
+input IconWhere {
+    ensureAtLEastOneField: String
+}
+
+input LandingPageWhere {
+    ensureAtLEastOneField: String
+    sectionsLinksCodename: String
+    titleEq: String
+}
+
+input LanguageFilter {
+    language: String!
+}
+
+input ListingPageWhere {
+    contentTypeEq: String
+    ensureAtLEastOneField: String
+    titleEq: String
+}
+
+input ListingSectionWhere {
+    contentTypeEq: String
+    ensureAtLEastOneField: String
+    numberOfItemsEq: Int
+    numberOfItemsGt: Int
+    numberOfItemsLt: Int
+    orderByEq: String
+    titleEq: String
+}
+
+input MenuWhere {
+    actionsLinksCodename: String
+    ensureAtLEastOneField: String
+    labelEq: String
+}
+
+input NavigationItemWhere {
+    contentLinksCodename: String
+    ensureAtLEastOneField: String
+    labelEq: String
+    seoCanonicalUrlEq: String
+    seoDescriptionEq: String
+    seoKeywordsEq: String
+    seoTitleEq: String
+    slugEq: String
+    subpagesLinksCodename: String
+}
+
+input PostWhere {
+    authorLinksCodename: String
+    ensureAtLEastOneField: String
+    excerptEq: String
+    publishingDateEq: DateTime
+    publishingDateGt: DateTime
+    publishingDateLt: DateTime
+    seoCanonicalUrlEq: String
+    seoDescriptionEq: String
+    seoKeywordsEq: String
+    seoTitleEq: String
+    slugEq: String
+    subtitleEq: String
+    titleEq: String
+}
+
+input QuoteWhere {
+    ensureAtLEastOneField: String
+    quoteTextEq: String
+}
+
+input SelectFormFieldOptionWhere {
+    ensureAtLEastOneField: String
+    labelEq: String
+    valueEq: String
+}
+
+input SelectFormFieldWhere {
+    defaultValueEq: String
+    ensureAtLEastOneField: String
+    labelEq: String
+    nameEq: String
+    optionsLinksCodename: String
+}
+
+input SimplePageWhere {
+    ensureAtLEastOneField: String
+    subtitleEq: String
+    titleEq: String
+}
+
+
+"The `DateTime` scalar type represents a date and time. `DateTime` expects timestamps to be formatted in accordance with the [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) standard."
+scalar DateTime
+
+scalar Guid

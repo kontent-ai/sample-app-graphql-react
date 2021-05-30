@@ -34,11 +34,11 @@ function FeaturesSection(props) {
     <section id={get(section, "system.codename", null)} className={classes.section}>
       <Container>
         <div className={classes.intro}>
-          {get(section, "title.value", null) && (
-            <Typography variant="h2">{get(section, "title.value", null)}</Typography>
+          {get(section, "title", null) && (
+            <Typography variant="h2">{get(section, "title", null)}</Typography>
           )}
 
-          {get(section, "subtitle.value", null) && (
+          {get(section, "subtitle", null) && (
             <Typography variant="subtitle1">
               <RichText
                 {...props}
@@ -47,20 +47,20 @@ function FeaturesSection(props) {
             </Typography>)}
         </div>
 
-        {get(section, "features.value[0]", null) && (
-          get(section, "features.value", []).map((feature, index) => (
+        {get(section, "features.items[0]", null) && (
+          get(section, "features.items", []).map((feature, index) => (
             <Grid container spacing={2} alignItems="center" key={index} direction={index % 2 ? "row-reverse" : "row"} className={classes.row}>
-              {get(feature, "image.value[0]", null) && (
+              {get(feature, "image[0]", null) && (
                 <Grid item xs={12} sm={6} className={`${classes.column}, ${classes.image}`}>
                   <Image
                     sizes={imageSizes}
-                    asset={(get(feature, "image.value[0]", null))}
-                    alt={get(feature, "image.value[0].description") || get(feature, "image.value[0].name")} />
+                    asset={(get(feature, "image[0]", null))}
+                    alt={get(feature, "image[0].description") || get(feature, "image[0].name")} />
                 </Grid>
               )}
 
               <Grid item xs={12} sm={4} className={`${classes.column} ${index % 2 ? classes.alignRight : undefined}`}>
-                <Typography variant="h3">{get(feature, "title.value", null)}</Typography>
+                <Typography variant="h3">{get(feature, "title", null)}</Typography>
 
                 <RichText
                   component="div"
@@ -69,8 +69,8 @@ function FeaturesSection(props) {
                 />
 
                 {
-                  get(feature, "actions.value[0]", null) && (
-                    <CtaButtons {...props} actions={get(feature, "actions.value", null)} />
+                  get(feature, "actions.items[0]", null) && (
+                    <CtaButtons actions={get(feature, "actions.items", [])} />
                   )
                 }
               </Grid>

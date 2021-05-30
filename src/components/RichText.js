@@ -40,7 +40,6 @@ const useStyles = makeStyles((theme) => ({
 
 function RichText(props) {
   const richTextElement = get(props, "richTextElement", "");
-  const linkedItems = get(props, "linkedItems", []);
   const mappings = get(props, "mappings");
 
   const classes = useStyles();
@@ -50,14 +49,13 @@ function RichText(props) {
     <RichTextComponent
       className={classes.richText}
       richTextElement={richTextElement}
-      linkedItems={linkedItems}
       mappings={mappings}
       resolveLinkedItem={(linkedItem, domNode, domToReact) => {
-        switch (linkedItem?.system.type) {
+        switch (linkedItem?.system.type.system.codename) {
           case "quote":
             return (
               <blockquote className={classes.quote}>
-                &ldquo;{linkedItem.quote_text.value}&rdquo;
+                &ldquo;{linkedItem.quoteText}&rdquo;
               </blockquote>
             );
           case "code_block":
@@ -85,7 +83,7 @@ function RichText(props) {
         );
       }}
       resolveLink={(link, mappings, domNode, domToReact) => {
-        const url = getUrlFromMapping(mappings, link.codename);
+        const url = getUrlFromMapping(mappings, link.system.codename);
         if (url) {
           return (
             <Link href={url}>

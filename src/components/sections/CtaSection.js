@@ -23,10 +23,10 @@ function CtaSection(props) {
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} sm={6}>
             <div className={classes.intro}>
-              {get(section, "title.value", null) && (
-                <Typography variant="h2">{get(section, "title.value", null)}</Typography>
+              {get(section, "title", null) && (
+                <Typography variant="h2">{get(section, "title", null)}</Typography>
               )}
-              {get(section, "subtitle.value", null) && (
+              {get(section, "subtitle", null) && (
                 <Typography variant="subtitle1" className={classes.content}>
                   <RichText
                     {...props}
@@ -37,7 +37,7 @@ function CtaSection(props) {
             </div>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Action {...props} action={get(section, "action.value[0]")} />
+            <Action {...props} action={get(section, "action.items[0]")} />
           </Grid>
         </Grid>
 

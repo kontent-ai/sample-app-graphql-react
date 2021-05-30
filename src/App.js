@@ -3,8 +3,8 @@ import {
   Switch,
   Route,
 } from "react-router-dom";
-import React, { useEffect, useState } from 'react';
-import { fetchKontentItem, getSitemapMappings } from './KontentDeliveryClient';
+import React, { useState } from 'react';
+import { gql, useQuery } from '@apollo/client';
 import get from 'lodash.get';
 import Post from './Post';
 import { getUrlSlug } from './utils';
@@ -12,37 +12,192 @@ import LandingPage from './LandingPage';
 import ListingPage from './ListingPage';
 import SimplePage from './SimplePage';
 import { UnknownComponent } from './components';
+import {
+  actionFields,
+  assetFields,
+  homePageSeoFields,
+  navigationSeoFields,
+  subpageNavigationItemFields
+} from './graphQLFragments';
+import GraphQLLoader from './components/GraphQLLoader';
+import getSeo from './utils/getSeo';
+import {getListingPaginationAndFilter} from './utils/queryString';
 
 export default function App() {
-  const [mappings, setMappings] = useState(null);
-  const [siteConfiguration, setSiteConfiguration] = useState({
-    asset: null,
-    title: null,
-    mainMenuActions: [],
-    favicon: null,
-    font: null,
-    palette: null});
-
-  useEffect( () => {
-    async function fetchDeliverData() {
-      const mappings = await getSitemapMappings();
-      const homepage = await fetchKontentItem("homepage", 3);
-
-      setSiteConfiguration({
-        asset: get(homepage, "header_logo.value[0]", null),
-        title: get(homepage, "title.value", ""),
-        mainMenuActions: get(homepage, "main_menu.value[0].actions.value", []),
-        favicon: get(homepage, "favicon.value[0].url", null),
-        font: get(homepage, "font.value[0].codename", null),
-        palette: get(homepage, "palette.value[0].codename", null)});
-      setMappings(mappings);
+  const homePageQuery = gql`
+    query HomePageQuery($codename: String!){
+      postCollection{
+        items {
+          slug,
+          system {
+            codename,
+            type {
+              system {
+                codename
+              }
+            }
+          }
+        }
+      }
+      
+      homepage(codename: $codename) {
+        content {
+          items {
+            system {
+              codename
+              type {
+                system {
+                  codename
+                }
+              }
+            }
+          }
+        }
+        ...HomePageSeoFields
+        headerLogo {
+          ...AssetFields
+        }
+        title
+        favicon {
+          url
+        }
+        font {
+          system {
+            codename
+          }
+        }
+        palette {
+          system {
+            codename
+          }
+        }
+        mainMenu(limit: 1) {
+          items {
+            ... on Menu {
+              system {
+                codename
+              }
+              actions {
+                items {
+                  ... on Action {
+                    ...ActionFields
+                  }
+                }
+              }
+            }
+          }
+        }
+        subpages {
+          items {
+            ... on NavigationItem {
+              ...SubpageNavigationItemFields
+              subpages {
+                items {
+                  ...SubpageNavigationItemFields
+                }
+              }
+            }
+          }
+        }
+      }
     }
 
-    fetchDeliverData();
-  }, []);
+    ${homePageSeoFields}
+    ${navigationSeoFields}
+    ${assetFields}
+    ${actionFields}
+    ${subpageNavigationItemFields}
+  `;
 
-  if(!mappings) {
-    return "loading...";
+  const getNavigationData = (parrentSlug, item) => {
+    if(item.system?.type?.system.codename === "post"){
+      return {
+        slug: parrentSlug.concat([item.slug]),
+        navigationType: "post",
+        navigationCodename: item.system?.codename,
+        contentCodename: item.system?.codename,
+        contentType: item.system?.type.system.codename
+      }
+    }
+
+    return {
+      slug: parrentSlug.concat([item.slug]),
+      navigationType: "navigationItem",
+      navigationCodename: item.system?.codename,
+      contentCodename: item.content.items[0].system.codename,
+      contentType: item.content.items[0].system.type.system.codename
+    }
+  };
+
+  const homepageCodename = "homepage";
+
+  const getMappings = (data) => {
+    const mappings = [{
+      slug: [],
+      navigationCodename: homepageCodename,
+      navigationType: "homepage",
+      contentCodename: data.homepage.content.items[0].system.codename,
+      contentType: data.homepage.content.items[0].system.type.system.codename
+    }];
+
+    data.homepage.subpages.items.map(item => {
+      const navigationData = getNavigationData([], item);
+      mappings.push(navigationData);
+      mappings.push(...item.subpages.items.map(subItem => getNavigationData(navigationData.slug, subItem)));
+
+      const content = item.content.items[0];
+      if(content.system.type.system.codename === "listing_page"){
+        const listingData = data[`${content.contentType}Collection`];
+        if (!listingData){
+          console.error(`Unknown listing page content type: ${content.contentType}`);
+        }
+        else {
+          mappings.push(...listingData.items.map(subItem => getNavigationData(navigationData.slug, subItem)));
+        }
+      }
+    });
+
+    return mappings.reduce((result, item) => {
+      result[getUrlSlug(item.slug)] = {
+        navigationCodename: item.navigationCodename,
+        navigationType: item.navigationType,
+        contentCodename: item.contentCodename,
+        contentType: item.contentType
+      };
+
+      return result;
+    },{});
+  };
+
+  const getSiteConfiguration = (data) => {
+    return {
+      asset: get(data, "homepage.headerLogo[0]", null),
+      title: get(data, "homepage.title", ""),
+      mainMenuActions: get(data, "homepage.mainMenu.items[0].actions.items", []),
+      favicon: get(data, "homepage.favicon[0].url", null),
+      font: get(data, "homepage.font[0].system.codename", null),
+      palette: get(data, "homepage.palette[0].system.codename", null)
+    };
+  };
+
+  const { loading, error } = useQuery(homePageQuery, {
+    variables: { codename: homepageCodename },
+    onCompleted: (data) => {
+      const mappings = getMappings(data);
+      const siteConfiguration = getSiteConfiguration(data);
+
+      setMappings(mappings);
+      setSiteConfiguration(siteConfiguration);
+      setHomepageSeo(getSeo(data.homepage));
+    }
+  });
+
+  const [mappings, setMappings] = useState(null);
+  const [siteConfiguration, setSiteConfiguration] = useState(null);
+  const [homepageSeo, setHomepageSeo] = useState(null);
+
+  if(error || loading || !mappings || !siteConfiguration || !homepageSeo) {
+    return <GraphQLLoader error={error} loading={loading}/>;
   }
 
   return (
@@ -69,23 +224,28 @@ export default function App() {
       return <h2>Not found</h2>;
     }
 
-    const {
-      codename,
-      type
-    } = navigationItem;
+    const pageProps = {
+      siteConfiguration,
+      mappings,
+    };
 
-    switch (type) {
+    if(navigationItem.navigationType === "homepage"){
+      pageProps["seo"] = homepageSeo;
+      pageProps["codename"] = navigationItem.contentCodename;
+    }
+
+    switch (navigationItem.contentType) {
       case "landing_page":
-        return <LandingPage codename={codename} siteConfiguration={siteConfiguration} mappings={mappings} /> ;
+        return <LandingPage {...pageProps} codename={pageProps["codename"] || navigationItem.navigationCodename} /> ;
       case "listing_page":
-        return <ListingPage codename={codename} siteConfiguration={siteConfiguration} mappings={mappings} />;
+        return <ListingPage {...pageProps} codename={navigationItem.navigationCodename} {...getListingPaginationAndFilter(location)}/>;
       case "simple_page":
-        return <SimplePage codename={codename} siteConfiguration={siteConfiguration} mappings={mappings} />;
+        return <SimplePage {...pageProps} codename={pageProps["codename"] || navigationItem.navigationCodename} />;
       case "post":
-        return <Post codename={codename} siteConfiguration={siteConfiguration} mappings={mappings} />;
+        return <Post {...pageProps} codename={navigationItem.contentCodename}/>;
       default:
         if (process.env.NODE_ENV === "development") {
-          console.error(`Unknown navigation item content type: ${type}`);
+          console.error(`Unknown navigation item content type: ${navigationItem.contentType}`);
           return (
               <UnknownComponent>
                 <pre>{JSON.stringify(mappings, undefined, 2)}</pre>

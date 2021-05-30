@@ -29,18 +29,18 @@ function ContentSection(props) {
       <Container>
         <Grid container spacing={2} alignItems="stretch" direction="row-reverse">
 
-          {get(section, "image.value[0]", null) && (
+          {get(section, "image[0]", null) && (
             <Grid item xs={12} sm={6} className={classes.column}>
               <Image
                 sizes={imageSizes}
-                asset={(get(section, "image.value[0]", null))}
-                alt={get(section, "image.value[0].description") || get(section, "image.value[0].name")} />
+                asset={(get(section, "image[0]", null))}
+                alt={get(section, "image[0].description") || get(section, "image[0].name")} />
             </Grid>
           )}
 
-          <Grid item xs={12} sm={get(section, "image.value[0]", null) ? 6 : 12} className={classes.column}>
+          <Grid item xs={12} sm={get(section, "image[0]", null) ? 6 : 12} className={classes.column}>
             {get(section, "title", null) && (
-              <Typography variant="h2">{get(section, "title.value", null)}</Typography>
+              <Typography variant="h2">{get(section, "title", null)}</Typography>
             )}
 
             <Typography variant="subtitle1" className={classes.content}>
@@ -50,9 +50,9 @@ function ContentSection(props) {
               />
             </Typography>
 
-            {get(section, "actions", null) && (
+            {get(section, "actions.items[0]", null) && (
               <div className={classes.actions}>
-                <CtaButtons {...props} actions={get(section, "actions.value", null)} />
+                <CtaButtons {...props} actions={get(section, "actions.items", [])} />
               </div>
             )}
           </Grid>

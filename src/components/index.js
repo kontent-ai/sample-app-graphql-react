@@ -3,12 +3,14 @@ import UnknownComponent from "./UnknownComponent";
 import Header from "./Header";
 import Link from "./Link";
 import Action from "./Action";
+import Filter from "./Filter";
 import Image from "./Image";
 import SideDrawer from "./SideDrawer";
 import Icon from "./Icon";
 import FormField from "./FormField";
 import RichText from "./RichText";
 import CtaButtons from "./CtaButtons";
+import GraphQLLoader from "./GraphQLLoader";
 
 export {
   CtaButtons,
@@ -17,11 +19,13 @@ export {
   Layout,
   Header,
   Link,
+  Filter,
   Action,
   Image,
   RichText,
   SideDrawer,
-  Icon
+  Icon,
+  GraphQLLoader
 };
 
 export default {
@@ -30,9 +34,12 @@ export default {
   UnknownComponent,
   Layout,
   Header,
+  Link,
+  Filter,
   Action,
   Image,
   RichText,
   SideDrawer,
-  Icon
+  Icon,
+  GraphQLLoader
 };

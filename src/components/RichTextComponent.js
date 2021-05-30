@@ -16,8 +16,8 @@ function isLink(domNode) {
 }
 
 function replaceNode(domNode, richTextElement, linkedItems, mappings, resolveLinkedItem, resolveImage, resolveLink, resolveDomNode) {
+  const { assets, links } = richTextElement;
 
-  const { images, links } = richTextElement;
   if (resolveLinkedItem && linkedItems) {
     if (isLinkedItem(domNode)) {
       const codeName = domNode.attribs?.["data-codename"];
@@ -26,18 +26,18 @@ function replaceNode(domNode, richTextElement, linkedItems, mappings, resolveLin
     }
   }
 
-  if (resolveImage && images) {
+  if (resolveImage && assets) {
     if (isImage(domNode)) {
       const imageId = domNode.attribs?.[IMAGE_ID_ATTRIBUTE_IDENTIFIER];
-      const image = images.find(image => image.imageId === imageId);
+      const image = assets.items.find(image => image.imageId === imageId);
       return resolveImage(image, domNode, domToReact);
     }
   }
 
-  if (resolveLink && links) {
+  if (resolveLink && links?.items) {
     if (isLink(domNode)) {
       const linkId = domNode.attribs?.[LINKED_ITEM_ID_ATTRIBUTE_IDENTIFIER];
-      const link = links.find(link => link.linkId === linkId);
+      const link = links.items.find(link => link.system.id === linkId);
       return resolveLink(link, mappings, domNode, domToReact);
     }
   }
@@ -47,8 +47,13 @@ function replaceNode(domNode, richTextElement, linkedItems, mappings, resolveLin
   }
 }
 
-function RichTextComponent({ richTextElement, linkedItems, mappings, resolveLinkedItem, resolveImage, resolveLink, resolveDomNode, className }) {
-  const cleanedValue = richTextElement.value.replace(/(\n|\r)+/, "");
+function RichTextComponent({ richTextElement, mappings, resolveLinkedItem, resolveImage, resolveLink, resolveDomNode, className }) {
+  const cleanedValue = richTextElement.html.replace(/(\n|\r)+/, "");
+  const linkedItems = richTextElement.components?.items.reduce((result, item) => {
+    result[item.system.codename] = item;
+
+    return result;
+  },{}) || {};
   const result = parseHTML(cleanedValue, {
     replace: (domNode) => replaceNode(domNode, richTextElement, linkedItems, mappings, resolveLinkedItem, resolveImage, resolveLink, resolveDomNode),
   });

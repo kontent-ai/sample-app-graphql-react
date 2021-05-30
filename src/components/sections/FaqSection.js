@@ -24,10 +24,10 @@ function FaqSection(props) {
     <section id={get(section, "system.codename", null)} className={classes.section}>
       <Container>
         <div className={classes.intro}>
-          {get(section, "title.value", null) && (
-            <Typography variant="h2">{get(section, "title.value", null)}</Typography>
+          {get(section, "title", null) && (
+            <Typography variant="h2">{get(section, "title", null)}</Typography>
           )}
-          {get(section, "subtitle.value", null) && (
+          {get(section, "subtitle", null) && (
             <Typography variant="subtitle1">
               <RichText
                 {...props}
@@ -36,13 +36,13 @@ function FaqSection(props) {
             </Typography>)}
         </div>
 
-        {get(section, "faq_items.value", []).map((faqItem, faqItem_idx) => (
+        {get(section, "faqItems.items", []).map((faqItem, faqItem_idx) => (
           <Accordion key={faqItem_idx} className={classes.accordion}>
             <AccordionSummary
               aria-controls={`panel${faqItem_idx + 1}a-content`}
               id={`panel${faqItem_idx + 1}a--header`}
             >
-              <Typography variant="h6">{get(faqItem, "question.value", null)}</Typography>
+              <Typography variant="h6">{get(faqItem, "question", null)}</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Typography component="div">
