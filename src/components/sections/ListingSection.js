@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import get from "lodash.get";
 import upperFirst from "lodash.upperfirst";
 import camelCase from "lodash.camelcase";
 import { Card, CardContent, Container, Grid, makeStyles, Typography } from "@material-ui/core";
 import thumbnails from "../thumbnails";
-import { RichText, UnknownComponent } from "..";
-import { fetchKontentItem, fetchListingSectionRelatedData } from '../../KontentDeliveryClient';
+import { RichText, UnknownComponent, GraphQLLoader } from "..";
+import { gql, useQuery } from '@apollo/client';
+import { assetFields } from '../../graphQLFragments';
 
 const useStyles = makeStyles((theme) => ({
   section: {
@@ -20,29 +21,63 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ListingSection(props) {
+  const listingSectionQuery = gql`
+    query ListingSectionQuery($limit: Int) {
+      postCollection(limit: $limit){
+        items {
+          system {
+            type {
+              system {
+                codename
+              }
+            }
+          }
+          image {
+            ...AssetFields
+          }
+          slug
+          title
+          excerpt
+          publishingDate
+          author(limit: 1) {
+            items {
+              ... on Author {
+                firstName
+                lastName
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    ${assetFields}
+  `;
+
   const section = get(props, "section", null);
   const classes = useStyles();
 
-  const [relatedItemsData, setRelatedItemsData] = useState({items:[]});
+  const [relatedItemsData, setRelatedItemsData] = useState(null);
 
-  useEffect( () => {
-    async function fetchDeliverData() {
-      const relatedData = await fetchListingSectionRelatedData(section);
-
-      setRelatedItemsData(relatedData);
+  const { loading, error } = useQuery(listingSectionQuery, {
+    variables: { limit: props.section.numberOfItems },
+    onCompleted: (data) => {
+      setRelatedItemsData(data[`${props.section.contentType}Collection`].items)
     }
+  }, [props.section.numberOfItems, props.section.contentType]);
 
-    fetchDeliverData();
-  }, [props.section]);
+  if(error || loading || !relatedItemsData) {
+    return <GraphQLLoader error={error} loading={loading}/>;
+  }
 
   return (
     <section id={get(section, "system.codename", null)} className={classes.section}>
       <Container>
         <div className={classes.intro}>
-          {get(section, "title.value", null) && (
-            <Typography variant="h2">{get(section, "title.value", null)}</Typography>
+          {get(section, "title", null) && (
+            <Typography variant="h2">{get(section, "title", null)}</Typography>
           )}
-          {get(section, "subtitle.value", null) && (
+          {get(section, "subtitle", null) && (
             <Typography variant="subtitle1">
               <RichText
                 {...props}
@@ -52,17 +87,17 @@ function ListingSection(props) {
           )}
         </div>
 
-        {relatedItemsData.items.length > 0 && (
+        {relatedItemsData.length > 0 && (
           <Grid container spacing={2} alignItems="stretch">
-            {relatedItemsData.items.map((item, item_idx) => {
-              const contentType = upperFirst(camelCase(get(item, "system.type", null)));
+            {relatedItemsData.map((item, item_idx) => {
+              const contentType = upperFirst(camelCase(get(item, "system.type.system.codename", null)));
               const ThumbnailLayout = thumbnails[contentType];
 
               if (process.env.NODE_ENV === "development" && !ThumbnailLayout) {
                 console.error(`Unknown section component for section content type: ${contentType}`);
                 return (
                   <Grid item md={4} sm={12} key={item_idx}>
-                    <UnknownComponent key={item_idx} {...this.props}>
+                    <UnknownComponent key={item_idx} {...props}>
                       <pre>{JSON.stringify(item, undefined, 2)}</pre>
                     </UnknownComponent>
                   </Grid>

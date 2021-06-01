@@ -1,9 +1,10 @@
 import get from "lodash.get";
-import { Image, Layout, RichText, UnknownComponent } from "./components";
+import { Image, Layout, RichText, GraphQLLoader } from "./components";
 import { Container, makeStyles, Typography, useTheme } from "@material-ui/core";
-import { useEffect, useState } from 'react';
-import { fetchKontentItemWithLinkedItems } from './KontentDeliveryClient';
-import getSeoData from './utils/getSeoData';
+import React, { useState } from 'react';
+import { gql, useQuery } from '@apollo/client';
+import { assetFields, postSeoFields, richTextFields } from './graphQLFragments';
+import getSeo from './utils/getSeo';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -12,63 +13,92 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Post(props) {
+    const postPageQuery = gql`
+        query PostPageQuery($codename: String!){
+            post(codename: $codename) {
+                ...PostSeoFields
+                system {
+                    type {
+                        system {
+                            codename
+                        }
+                    }
+                }
+                image {
+                    ...AssetFields
+                }
+                title
+                publishingDate
+                author(limit: 1) {
+                    items {
+                        ... on Author {
+                            firstName
+                            lastName
+                        }
+                    }
+                }
+                subtitle
+                content {
+                    ...RichTextFields
+                }
+            }
+        }
+
+        ${postSeoFields}
+        ${assetFields}
+        ${richTextFields}
+    `;
+
     const [post, setPost] = useState(null);
-    const [seo, setSeo] = useState({ });
-    const [linkedItems, setLinkedItems] = useState(null);
+    const [seo, setSeo] = useState(null);
     const classes = useStyles();
     const theme = useTheme();
     const imageSizes = `${theme.breakpoints.values.md}px`;
-    useEffect( () => {
-        async function fetchDeliverData() {
-            const post = await fetchKontentItemWithLinkedItems(props.codename, 1);
 
-            setPost(post.item);
-            setSeo(getSeoData(post.item));
-            setLinkedItems(post.linkedItems);
+
+    const { loading, error } = useQuery(postPageQuery, {
+        variables: { codename: props.codename },
+        onCompleted: (data) => {
+            setPost(data.post);
+            setSeo(getSeo(data.post))
         }
-
-        fetchDeliverData();
     }, [props.codename]);
 
-    if (!post || !linkedItems) {
-        return "loading...";
+    if(error || loading || !post) {
+        return <GraphQLLoader error={error} loading={loading}/>;
     }
 
     return (
         <Layout {...props} seo={seo}>
             <Container className={classes.root} maxWidth="md">
-                {get(post, "title.value", null) && (
-                    <Typography variant="h1">{get(post, "title.value", null)}</Typography>
+                {get(post, "title", null) && (
+                    <Typography variant="h1">{get(post, "title", null)}</Typography>
                 )}
-                {get(post, "subtitle.value", null) && (
+                {get(post, "subtitle", null) && (
                     <Typography variant="subtitle1" >
-                        <RichText
-                            {...props}
-                            richTextElement={get(post, "subtitle", null)}
-                        />
+                        {get(post, "subtitle", null)}
                     </Typography>
                 )}
 
-                {get(post, "image.value[0]", null) && (
+                {get(post, "image[0]", null) && (
                     <div>
                         <Image
                             sizes={imageSizes}
-                            asset={get(post, "image.value[0]", null)}
-                            alt={get(post, "image.value[0].description") || get(post, "image.value[0].name", null)} />
+                            asset={get(post, "image[0]", null)}
+                            alt={get(post, "image[0].description") || get(post, "image[0].name", null)} />
                     </div>
                 )}
                 <Typography component="div">
                     <RichText
                         {...props}
-                        linkedItems={linkedItems}
                         richTextElement={get(post, "content", null)}
                     />
                 </Typography>
 
                 <footer>
-                    <time>{get(post, "publishing_date.value", null) && new Date(get(post, "publishing_date.value", null)).toDateString()}</time>
-                    {get(post, "author.value[0]", null) &&
-                    (", by " + get(post, "author.value[0].first_name.value", null) + " " + get(post, "author.value[0].last_name.value", null))}
+                    <time>{get(post, "publishingDate", null) && new Date(get(post, "publishingDate", null)).toDateString()}</time>
+                    {get(post, "author.items[0]", null) &&
+                    (", by " + get(post, "author.items[0].firstName", null) + " " + get(post, "author.items[0].lastName", null))}
                 </footer>
             </Container>
         </Layout>

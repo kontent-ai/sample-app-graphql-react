@@ -1,10 +1,10 @@
 import get from "lodash.get";
-import { Image, Layout, RichText } from "./components";
+import { Image, Layout, RichText, GraphQLLoader } from "./components";
 import { Container, makeStyles, Typography, useTheme } from "@material-ui/core";
-import React, { useEffect, useState } from 'react';
-import { fetchKontentItemWithLinkedItems } from './KontentDeliveryClient';
-import LandingPage from './LandingPage';
-import getSeoData from './utils/getSeoData';
+import React, { useState } from 'react';
+import { gql, useQuery } from '@apollo/client';
+import { assetFields, navigationSeoFields, richTextFields } from './graphQLFragments';
+import getSeo from './utils/getSeo';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -13,54 +13,98 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function SimplePage(props) {
-    const classes = useStyles();
+    const simplePageFields = gql`
+        fragment SimplePageFields on SimplePage {
+            content {
+                ...RichTextFields
+            }
+            image {
+                ...AssetFields
+            }
+            subtitle
+            title
+        }
+    `;
 
-    const [page, setPage] = useState(null);
-    const [seo, setSeo] = useState({ });
-    const [linkedItems, setLinkedItems] = useState(null);
+    const simplePageQuery = gql`
+        query SimplePageQuery($codename: String!) {
+            simplePage(codename: $codename){
+                ...SimplePageFields
+            }
+        }
+        ${simplePageFields}
+        ${assetFields}
+        ${richTextFields}
+    `;
 
-    useEffect( () => {
-        async function fetchDeliverData() {
-            const pageData = await fetchKontentItemWithLinkedItems(props.codename, 3);
-            setPage(get(pageData, "item.content.value[0]", null));
-            setSeo(getSeoData(pageData.item));
-            setLinkedItems(pageData.linkedItems);
+    const navigationAndSimplePageQuery = gql`
+        query NavigationAndSimplePageQuery($codename: String!) {
+            navigationItem(codename: $codename){
+                ...NavigationSeoFields
+                content {
+                    items {
+                        ... on SimplePage {
+                            ...SimplePageFields
+                        }
+                    }
+                }
+            }
         }
 
-        fetchDeliverData();
-    }, [props.codename]);
+        ${simplePageFields}
+        ${assetFields}
+        ${richTextFields}
+        ${navigationSeoFields}
+    `;
 
+    const classes = useStyles();
     const theme = useTheme();
     const imageSizes = `${theme.breakpoints.values.md}px`;
 
-    if (!page || !linkedItems) {
-        return "loading...";
+    const [page, setPage] = useState(null);
+    const [seo, setSeo] = useState({ });
+
+    const { loading, error } = useQuery(props.seo ? simplePageQuery : navigationAndSimplePageQuery, {
+        variables: { codename: props.codename },
+        onCompleted: (data) => {
+            if(props.seo){
+                setPage(data.simplePage);
+                setSeo(props.seo);
+            }
+            else{
+                setPage(data.navigationItem.content.items[0]);
+                setSeo(getSeo(data.navigationItem));
+            }
+        }
+    }, [props.codename, props.seo]);
+
+    if(error || loading || !page) {
+        return <GraphQLLoader error={error} loading={loading}/>;
     }
 
     return (
         <Layout {...props} seo={seo}>
             <Container className={classes.root} maxWidth="md">
-                {get(page, "title.value", null) && (
-                    <Typography variant="h1">{get(page, "title.value", null)}</Typography>
+                {get(page, "title", null) && (
+                    <Typography variant="h1">{get(page, "title", null)}</Typography>
                 )}
-                {get(page, "subtitle.value", null) && (
+                {get(page, "subtitle", null) && (
                     <Typography variant="subtitle1" >
-                        {get(page, "subtitle.value")}
+                        {get(page, "subtitle")}
                     </Typography>
                 )}
 
-                {get(page, "image.value[0]", null) && (
+                {get(page, "image[0]", null) && (
                     <div>
                         <Image
                             sizes={imageSizes}
-                            asset={(get(page, "image.value[0]", null))}
-                            alt={get(page, "image.value[0].description") || get(page, "image.value[0].name", null)} />
+                            asset={(get(page, "image[0]", null))}
+                            alt={get(page, "image[0].description") || get(page, "image[0].name", null)} />
                     </div>
                 )}
                 <Typography component="div">
                     <RichText
                         richTextElement={get(page, "content", null)}
-                        linkedItems={linkedItems}
                         mappings={props.mappings}
                     />
                 </Typography>

@@ -6,7 +6,7 @@ const Image = (props) => {
   const { asset, width, height, alt, sizes, loading } = props;
   const theme = useTheme();
   const componentWidth = width || asset.width || theme.breakpoints.values.md;
-  const componentHeight = height || (componentWidth / asset.width) * asset.height;
+  const componentHeight = height || (componentWidth / asset.width) * asset.height || undefined;
 
   const imgProps = sizes && srcIsKontentAsset(asset.url) ? {
     sizes: sizes,

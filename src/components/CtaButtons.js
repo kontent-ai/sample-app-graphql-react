@@ -7,7 +7,7 @@ function CtaButtons(props) {
 
     return (actions.map((action, action_idx) => {
             return (
-                <Action key={action_idx} {...props} action={action} />
+                <Action key={action_idx} action={action} />
             );
         })
     );

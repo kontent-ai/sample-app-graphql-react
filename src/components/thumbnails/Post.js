@@ -6,15 +6,15 @@ import { useTheme } from "@material-ui/core";
 function Post(props) {
   let post = get(props, "item", null);
   let columnCount = get(props, "columnCount", 1);
-  let postUrl = "/blog/" + get(post, "slug.value", "#");
+  let postUrl = "/blog/" + get(post, "slug", "#");
 
   const theme = useTheme();
   const imageSizes = `(min-width: ${theme.breakpoints.values.md}px) ${Math.floor(100 / columnCount)}vw, 100vw`;
-  const image = get(post, "image.value[0]", null);
-  const title = get(post, "title.value", null);
-  const excerpt = get(post, "excerpt.value", null);
-  const publishingDate = get(post, "publishing_date.value", null);
-  const author = get(post, "author.value[0]", null);
+  const image = get(post, "image[0]", null);
+  const title = get(post, "title", null);
+  const excerpt = get(post, "excerpt", null);
+  const publishingDate = get(post, "publishingDate", null);
+  const author = get(post, "author.items[0]", null);
   return (
     <article>
       <div>
@@ -35,7 +35,7 @@ function Post(props) {
           </div>
           <footer>
             <time>{publishingDate && new Date(publishingDate).toDateString()}</time>
-            {author && `, by ${author.first_name.value} ${author.last_name.value}`}
+            {author && `, by ${author.firstName} ${author.lastName}`}
           </footer>
         </div>
       </div>

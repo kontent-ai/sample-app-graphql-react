@@ -12,17 +12,17 @@ const useStyles = makeStyles((theme) => ({
 
 function ContactSection(props) {
   const section = get(props, "section", null);
-  const form = get(props, "section.form.value[0]", null);
+  const form = get(props, "section.form.items[0]", null);
   const classes = useStyles();
 
   return (
     <section id={get(section, "system.codename", null)} className={classes.section}>
       <Container>
         <div className={classes.intro}>
-          {get(section, "title.value", null) && (
-            <Typography variant="h2">{get(section, "title.value", null)}</Typography>
+          {get(section, "title", null) && (
+            <Typography variant="h2">{get(section, "title", null)}</Typography>
           )}
-          {get(section, "subtitle.value", null) && (
+          {get(section, "subtitle", null) && (
             <Typography variant="subtitle1" >
               <RichText
                 {...props}
@@ -41,18 +41,18 @@ function ContactSection(props) {
 
         {form && (
           <form
-            name={get(form, "form_id.value", null)}
-            id={get(form, "form_id.value", null)}
-            action={get(form, "form_id.form_action.value", null)}
+            name={get(form, "formId", null)}
+            id={get(form, "formId", null)}
+            action={get(form, "formAction", null)}
             method="POST"
           >
-            {get(form, "fields.value", []).map((field, field_idx) => (
+            {get(form, "fields.items", []).map((field, field_idx) => (
               <FormField field={field} key={field_idx} />
             ))
             }
 
             <Button variant="contained" color="primary" className={classes.formSubmission}>
-              {get(form, "submit_label.value", null)}
+              {get(form, "submitLabel", null)}
             </Button>
           </form>
         )}
