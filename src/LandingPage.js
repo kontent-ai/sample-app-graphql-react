@@ -13,6 +13,9 @@ import {
     richTextFields,
 } from './graphQLFragments';
 import getSeo from './utils/getSeo';
+import { useHistory } from 'react-router-dom';
+import { getLanguage } from './utils/queryString';
+import { languages } from './components/LanguageSelector';
 
 const useStyles = makeStyles((theme) => ({
     sections: {
@@ -173,8 +176,8 @@ function LandingPage(props) {
     `;
 
     const landingPageQuery = gql`
-        query LandingPageQuery($codename: String!) {
-            landingPage(codename: $codename) {
+        query LandingPageQuery($codename: String!, $language: String!) {
+            landingPage(codename: $codename, language: {language: $language}) {
                 ...LandingPageFields
             }
         }
@@ -186,8 +189,8 @@ function LandingPage(props) {
     `;
 
     const navigationAndLandingPageQuery = gql`
-        query NavigationAndLandingPageQuery($codename: String!) {
-            navigationItem(codename: $codename){
+        query NavigationAndLandingPageQuery($codename: String!, $language: String!) {
+            navigationItem(codename: $codename, language: {language: $language}){
                 ...NavigationSeoFields
                 content {
                     items {
@@ -210,9 +213,11 @@ function LandingPage(props) {
 
     const [sectionItems, setSectionItems] = useState(null);
     const [seo, setSeo] = useState({ });
+    const language = getLanguage(useHistory().location);
+
 
     const { loading, error } = useQuery(props.seo ? landingPageQuery : navigationAndLandingPageQuery, {
-        variables: { codename: props.codename },
+        variables: { codename: props.codename, language: language || languages[0].codename},
         onCompleted: (data) => {
             if(props.seo) {
                 setSectionItems(data.landingPage.sections.items);

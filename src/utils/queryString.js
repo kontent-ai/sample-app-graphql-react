@@ -1,5 +1,6 @@
 const pageSize = 3;
 const authorQueryStringKey = "author";
+const languageQueryStringKey = "lang";
 const pageQueryStringKey = "page";
 
 const getQueryString = (page, author) => `?page=${page > 0 ? page : 1}${author ? "&author=" + author : ""}`
@@ -21,24 +22,32 @@ export const getListingPaginationAndFilter = (location) => {
   }
 };
 
-export const setAuthor = (location, author) => {
+export const setAuthor = (location, author) => setParameter(location, authorQueryStringKey, author);
+
+export const getAuthor = (location) => getParameter(location, authorQueryStringKey);
+
+export const setLanguage = (location, language) => setParameter(location, languageQueryStringKey, language);
+
+export const getLanguage = (location) => getParameter(location, languageQueryStringKey);
+
+const getParameter = (location, key) => {
   const urlParams = new URLSearchParams(location.search);
 
-  if(!author){
-    urlParams.delete(authorQueryStringKey);
+  return urlParams.get(key) || "";
+};
+
+const setParameter = (location, key, value) => {
+  const urlParams = new URLSearchParams(location.search);
+
+  if(!value){
+    urlParams.delete(key);
   }
   else{
-    urlParams.set(authorQueryStringKey, author);
+    urlParams.set(key, value);
   }
 
   return {
     pathname: location.pathname,
     search: `?${urlParams}`
   };
-};
-
-export const getAuthor = (location) => {
-  const urlParams = new URLSearchParams(location.search);
-
-  return urlParams.get(authorQueryStringKey) || "";
-};
+}

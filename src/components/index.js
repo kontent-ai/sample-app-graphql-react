@@ -11,6 +11,7 @@ import FormField from "./FormField";
 import RichText from "./RichText";
 import CtaButtons from "./CtaButtons";
 import GraphQLLoader from "./GraphQLLoader";
+import LanguageSelector from "./LanguageSelector";
 
 export {
   CtaButtons,
@@ -25,7 +26,8 @@ export {
   RichText,
   SideDrawer,
   Icon,
-  GraphQLLoader
+  GraphQLLoader,
+  LanguageSelector
 };
 
 export default {
@@ -41,5 +43,6 @@ export default {
   RichText,
   SideDrawer,
   Icon,
-  GraphQLLoader
+  GraphQLLoader,
+  LanguageSelector
 };
