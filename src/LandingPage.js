@@ -13,7 +13,7 @@ import {
     richTextFields,
 } from './graphQLFragments';
 import getSeo from './utils/getSeo';
-import { useHistory } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { getLanguage } from './utils/queryString';
 import { languages } from './components/LanguageSelector';
 
@@ -213,11 +213,10 @@ function LandingPage(props) {
 
     const [sectionItems, setSectionItems] = useState(null);
     const [seo, setSeo] = useState({ });
-    const language = getLanguage(useHistory().location);
-
+    const language = getLanguage(useLocation()) || languages[0].codename;
 
     const { loading, error } = useQuery(props.seo ? landingPageQuery : navigationAndLandingPageQuery, {
-        variables: { codename: props.codename, language: language || languages[0].codename},
+        variables: { codename: props.codename, language: language},
         onCompleted: (data) => {
             if(props.seo) {
                 setSectionItems(data.landingPage.sections.items);

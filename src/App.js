@@ -1,7 +1,7 @@
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
+  useLocation,
 } from "react-router-dom";
 import React, { useState } from 'react';
 import { gql, useQuery } from '@apollo/client';
@@ -21,11 +21,12 @@ import {
 } from './graphQLFragments';
 import GraphQLLoader from './components/GraphQLLoader';
 import getSeo from './utils/getSeo';
-import {getListingPaginationAndFilter} from './utils/queryString';
+import { getLanguage, getListingPaginationAndFilter } from './utils/queryString';
+import { languages } from './components/LanguageSelector';
 
 export default function App() {
   const homePageQuery = gql`
-    query HomePageQuery($codename: String!){
+    query HomePageQuery($codename: String!, $language: String!){
       postCollection{
         items {
           slug,
@@ -40,7 +41,7 @@ export default function App() {
         }
       }
       
-      homepage(codename: $codename) {
+      homepage(codename: $codename, language: {language: $language}) {
         content {
           items {
             system {
@@ -180,8 +181,10 @@ export default function App() {
     };
   };
 
+  const language = getLanguage(useLocation()) || languages[0].codename;
+
   const { loading, error } = useQuery(homePageQuery, {
-    variables: { codename: homepageCodename },
+    variables: { codename: homepageCodename, language: language },
     onCompleted: (data) => {
       const mappings = getMappings(data);
       const siteConfiguration = getSiteConfiguration(data);
@@ -201,11 +204,9 @@ export default function App() {
   }
 
   return (
-    <Router>
-      <Switch>
-        <Route path="/" render={renderPage}/>
-      </Switch>
-    </Router>
+    <Switch>
+      <Route path="/" render={renderPage}/>
+    </Switch>
   );
 
   function renderPage({ location }){
