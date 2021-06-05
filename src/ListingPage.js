@@ -8,7 +8,8 @@ import React, { useState } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { assetFields, navigationSeoFields } from './graphQLFragments';
 import getSeo from './utils/getSeo';
-import { getAuthor, setAuthor } from './utils/queryString';
+import { getAuthor, getPersona, setAuthor } from './utils/queryString';
+import { useHistory } from 'react-router-dom';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 
 function ListingPage(props) {
     const listingPageQuery = gql`
-        query ListingPageQuery($limit: Int, $offset: Int, $codename: String!, $author: String){
+        query ListingPageQuery($limit: Int, $offset: Int, $codename: String!, $author: String, $persona: String){
             authorCollection {
                 items {
                     firstName
@@ -39,7 +40,7 @@ function ListingPage(props) {
                     }
                 }
             }
-            postCollection(limit: $limit, offset: $offset, where: {authorLinksCodename: $author}) {
+            postCollection(limit: $limit, offset: $offset, where: {authorLinksCodename: $author, personaLinksTerm: $persona}) {
                 items {
                     system {
                         type {
@@ -83,6 +84,7 @@ function ListingPage(props) {
         ${navigationSeoFields}
     `;
 
+  const persona = getPersona(useHistory().location);
   const classes = useStyles();
 
   const [relatedItems, setRelatedItems] = useState([]);
@@ -90,7 +92,7 @@ function ListingPage(props) {
   const [seo, setSeo] = useState(null);
 
     const { loading, error, data } = useQuery(listingPageQuery, {
-        variables: { codename: props.codename, author: props.author, limit: props.limit, offset: props.offset },
+        variables: { codename: props.codename, author: props.author, persona: persona || undefined, limit: props.limit, offset: props.offset },
         onCompleted: (data) => {
             const collection = data[`${data.navigationItem.content.items[0].contentType}Collection`];
             if(collection) {
