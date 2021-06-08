@@ -8,9 +8,7 @@ import React, { useState } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { assetFields, navigationSeoFields } from './graphQLFragments';
 import getSeo from './utils/getSeo';
-import { getAuthor, getPersona, setAuthor } from './utils/queryString';
-import { useHistory } from 'react-router-dom';
-
+import { getAuthor, getPersona, setAuthor, setPersona } from './utils/queryString';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -84,34 +82,43 @@ function ListingPage(props) {
         ${navigationSeoFields}
     `;
 
-  const persona = getPersona(useHistory().location);
-  const classes = useStyles();
+    const classes = useStyles();
 
-  const [relatedItems, setRelatedItems] = useState([]);
-  const [authors, setAuthors] = useState([]);
-  const [seo, setSeo] = useState(null);
+    const [relatedItems, setRelatedItems] = useState([]);
+    const [authors, setAuthors] = useState([]);
+    const [personas, setPersonas] = useState([]);
+    const [seo, setSeo] = useState(null);
 
     const { loading, error, data } = useQuery(listingPageQuery, {
-        variables: { codename: props.codename, author: props.author, persona: persona || undefined, limit: props.limit, offset: props.offset },
+        variables: { codename: props.codename, author: props.author, persona: props.persona, limit: props.limit, offset: props.offset },
         onCompleted: (data) => {
             const collection = data[`${data.navigationItem.content.items[0].contentType}Collection`];
-            if(collection) {
+            if (collection) {
                 setRelatedItems(collection.items);
             }
             else {
                 setRelatedItems(null);
             }
 
-            setAuthors(data.authorCollection.items.map(author => {return {
-                name: `${author.firstName} ${author.lastName}`,
-                codename: author.system.codename
-            }}));
+            setAuthors(data.authorCollection.items.map(author => {
+                return {
+                    name: `${author.firstName} ${author.lastName}`,
+                    codename: author.system.codename
+                }
+            }));
+            
+            // TODO update hardcoded personas and load them from Kontent
+            setPersonas([{
+                name: "Developer",
+                codename: "developer"
+            }]);
+
             setSeo(getSeo(data.navigationItem));
         }
-    }, [props.codename, props.author, props.limit, props.offset]);
+    }, [props.codename, props.author, props.persona, props.limit, props.offset]);
 
-    if(error || loading || !seo) {
-        return <GraphQLLoader error={error} loading={loading}/>;
+    if (error || loading || !seo) {
+        return <GraphQLLoader error={error} loading={loading} />;
     }
 
     if (relatedItems == null) {
@@ -128,7 +135,8 @@ function ListingPage(props) {
     return (
         <Layout {...props} seo={seo}>
             <Container className={classes.root}>
-                <Filter label="Author" parameterName="author" options={authors} updateLocation={setAuthor} getValueFromLocation={getAuthor}/>
+                <Filter label="Author" parameterName="author" options={authors} updateLocation={setAuthor} getValueFromLocation={getAuthor} />
+                <Filter label="Persona" parameterName="persona" options={personas} updateLocation={setPersona} getValueFromLocation={getPersona} />
                 {relatedItems.length > 0 && <Grid container spacing={4} alignItems="stretch">
                     {relatedItems.map((item, item_idx) => {
                         const contentType = upperFirst(camelCase(get(item, "system.type.system.codename", null)));
@@ -137,33 +145,33 @@ function ListingPage(props) {
                             console.error(`Unknown section component for section content type: ${contentType}`);
                             return (
                                 <Grid item md={4} sm={12} key={item_idx}>
-                                  <Paper className={classes.thumbnailPaper}>
-                                    <UnknownComponent {...props}>
-                                      <pre>{JSON.stringify(item, undefined, 2)}</pre>
-                                    </UnknownComponent>
-                                  </Paper>
+                                    <Paper className={classes.thumbnailPaper}>
+                                        <UnknownComponent {...props}>
+                                            <pre>{JSON.stringify(item, undefined, 2)}</pre>
+                                        </UnknownComponent>
+                                    </Paper>
 
                                 </Grid>
                             );
                         }
 
                         return (
-                          <Grid variant="inbound" item md={4} sm={12} key={item_idx}>
-                            <Paper className={classes.thumbnailPaper}>
-                              <ThumbnailLayout  {...props} item={item} site={props} columnCount={3}/>
-                            </Paper>
-                          </Grid>
+                            <Grid variant="inbound" item md={4} sm={12} key={item_idx}>
+                                <Paper className={classes.thumbnailPaper}>
+                                    <ThumbnailLayout  {...props} item={item} site={props} columnCount={3} />
+                                </Paper>
+                            </Grid>
                         );
                     })}
-                    </Grid>
+                </Grid>
                 }
                 <div className={classes.pagination}>
                     <Link href={props.prevPage}>Previous page</Link>
                     <Link href={props.nextPage}>Next page</Link>
                 </div>
             </Container>
-      </Layout>
-  );
+        </Layout>
+    );
 }
 
 export default ListingPage;

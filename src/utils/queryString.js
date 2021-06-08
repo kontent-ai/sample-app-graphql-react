@@ -12,6 +12,7 @@ const setPageAndReturnQueryString = (page, urlParams) => {
 export const getListingPaginationAndFilter = (location) => {
   const urlParams = new URLSearchParams(location.search);
   const authorQuery = urlParams.get(authorQueryStringKey);
+  const personaQuery = urlParams.get(personaQueryStringKey);
   const pageQuery = urlParams.get(pageQueryStringKey);
   let pageNumber = parseInt(pageQuery);
 
@@ -19,6 +20,7 @@ export const getListingPaginationAndFilter = (location) => {
 
   return {
     author: authorQuery,
+    persona: personaQuery,
     nextPage: `${location.pathname}${setPageAndReturnQueryString(pageNumber + 1, urlParams)}`,
     prevPage: `${location.pathname}${setPageAndReturnQueryString(pageNumber - 1, urlParams)}`,
     limit: pageSize,
