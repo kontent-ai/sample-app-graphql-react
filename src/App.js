@@ -183,15 +183,21 @@ export default function App() {
 
   const language = getLanguage(useLocation()) || languages[0].codename;
 
-  const { loading, error } = useQuery(homePageQuery, {
+  const { loading, error, fetchMore } = useQuery(homePageQuery, {
     variables: { codename: homepageCodename, language: language },
-    onCompleted: (data) => {
+    onCompleted: async (data) => {
       const mappings = getMappings(data);
       const siteConfiguration = getSiteConfiguration(data);
 
-      setMappings(mappings);
       setSiteConfiguration(siteConfiguration);
       setHomepageSeo(getSeo(data.homepage));
+
+      await fetchMore({
+        variables: { codename: homepageCodename, language: languages.find(lang => lang.codename !== language).codename},
+        updateQuery: (_, fetchMoreResult) => {
+          setMappings({...getMappings(fetchMoreResult.fetchMoreResult), ...mappings});
+        }
+      });
     }
   });
 
