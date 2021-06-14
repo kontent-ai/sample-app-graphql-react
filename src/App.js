@@ -141,7 +141,7 @@ export default function App() {
       contentType: data.homepage.content.items[0].system.type.system.codename
     }];
 
-    data.homepage.subpages.items.map(item => {
+    data.homepage.subpages.items.forEach(item => {
       const navigationData = getNavigationData([], item);
       mappings.push(navigationData);
       mappings.push(...item.subpages.items.map(subItem => getNavigationData(navigationData.slug, subItem)));

@@ -1,6 +1,7 @@
 const pageSize = 3;
 const authorQueryStringKey = "author";
 const languageQueryStringKey = "lang";
+const personaQueryStringKey = "persona";
 const pageQueryStringKey = "page";
 
 const setPageAndReturnQueryString = (page, urlParams) => {
@@ -12,6 +13,7 @@ const setPageAndReturnQueryString = (page, urlParams) => {
 export const getListingPaginationAndFilter = (location) => {
   const urlParams = new URLSearchParams(location.search);
   const authorQuery = urlParams.get(authorQueryStringKey);
+  const personaQuery = urlParams.get(personaQueryStringKey);
   const pageQuery = urlParams.get(pageQueryStringKey);
   let pageNumber = parseInt(pageQuery);
 
@@ -19,6 +21,7 @@ export const getListingPaginationAndFilter = (location) => {
 
   return {
     author: authorQuery,
+    persona: personaQuery,
     nextPage: `${location.pathname}${setPageAndReturnQueryString(pageNumber + 1, urlParams)}`,
     prevPage: `${location.pathname}${setPageAndReturnQueryString(pageNumber - 1, urlParams)}`,
     limit: pageSize,
@@ -33,6 +36,10 @@ export const getAuthor = (location) => getParameter(location, authorQueryStringK
 export const setLanguage = (location, language) => setParameter(location, languageQueryStringKey, language);
 
 export const getLanguage = (location) => getParameter(location, languageQueryStringKey);
+
+export const setPersona = (location, language) => setParameter(location, personaQueryStringKey, language);
+
+export const getPersona = (location) => getParameter(location, personaQueryStringKey);
 
 const getParameter = (location, key) => {
   const urlParams = new URLSearchParams(location.search);
