@@ -4,7 +4,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import React, { useState } from 'react';
-import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery, useLazyQuery } from '@apollo/client';
 import get from 'lodash.get';
 import Post from './Post';
 import { getUrlSlug } from './utils';
@@ -25,6 +25,20 @@ import { getLanguage, getListingPaginationAndFilter } from './utils/queryString'
 import { languages } from './components/LanguageSelector';
 
 export default function App() {
+  const navigationItemQuery = gql`query NavigationItemSlug($codename: String!, $language: String!) {
+  navigationItem(codename: $codename, language: {language: $language}) {
+    slug
+    system {
+      codename
+      language {
+        system {
+          codename
+        }
+      }
+    }
+  }
+}`;
+
   const homePageQuery = gql`
     query HomePageQuery($codename: String!, $language: String!){
       postCollection{
@@ -183,30 +197,37 @@ export default function App() {
 
   const language = getLanguage(useLocation()) || languages[0].codename;
 
-  const { loading, error, fetchMore } = useQuery(homePageQuery, {
+  const [getOtherLanguage, { loading: otherLanguageLoading, error: otherLanguageError, data: otherLanguageData }] = useLazyQuery(navigationItemQuery, {
+    onCompleted: (data => {
+      setUrlSlugs(urlSlugs.concat(data))
+    })
+  })
+
+  const { loading, error } = useQuery(homePageQuery, {
     variables: { codename: homepageCodename, language: language },
-    onCompleted: async (data) => {
+    onCompleted: (data) => {
       const mappings = getMappings(data);
       const siteConfiguration = getSiteConfiguration(data);
 
       setSiteConfiguration(siteConfiguration);
       setHomepageSeo(getSeo(data.homepage));
 
-      await fetchMore({
-        variables: { codename: homepageCodename, language: languages.find(lang => lang.codename !== language).codename},
-        updateQuery: (_, fetchMoreResult) => {
-          setMappings({...getMappings(fetchMoreResult.fetchMoreResult), ...mappings});
-        }
-      });
+      setMappings(mappings);
+
+      const navigationItem = mappings[getUrlSlug(window.location.pathname)];
+
+      languages.filter(lang => lang.codename != language).map(lang => lang.codename).forEach(langCodename =>
+        getOtherLanguage({variables: {codename: navigationItem.navigationCodename, language: langCodename}}));
     }
   });
 
   const [mappings, setMappings] = useState(null);
+  const [urlSlugs, setUrlSlugs] = useState([]);
   const [siteConfiguration, setSiteConfiguration] = useState(null);
   const [homepageSeo, setHomepageSeo] = useState(null);
-
-  if(error || loading || !mappings || !siteConfiguration || !homepageSeo) {
-    return <GraphQLLoader error={error} loading={loading}/>;
+debugger
+  if(error || loading || otherLanguageLoading || otherLanguageError || !otherLanguageData || !mappings || !siteConfiguration || !homepageSeo) {
+    return <GraphQLLoader error={error || otherLanguageError} loading={loading || otherLanguageLoading}/>;
   }
 
   return (
@@ -217,8 +238,9 @@ export default function App() {
 
   function renderPage({ location }){
     const navigationItem = mappings[getUrlSlug(location.pathname)];
-
+  
     if(!navigationItem) {
+      return <GraphQLLoader error='waiting for other requests'/>;
       if (process.env.NODE_ENV === "development") {
         console.error(`Unknown navigation item pathname: ${location.pathname}`);
         return (
@@ -234,6 +256,7 @@ export default function App() {
     const pageProps = {
       siteConfiguration,
       mappings,
+      urlSlugs
     };
 
     if(navigationItem.navigationType === "homepage"){

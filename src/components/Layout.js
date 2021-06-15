@@ -126,7 +126,7 @@ function Layout(props) {
           <ThemeProvider theme={theme}>
               <CssBaseline />
               <Box display="flex" flexDirection="column" alignItems="stretch" alignContent="space-between" className={classes.root}>
-                  <Header {...props.siteConfiguration} />
+                  <Header {...props.siteConfiguration} urlSlugs={props.urlSlugs} />
                   <main className={classes.flex}>
                       {props.children}
                   </main>
