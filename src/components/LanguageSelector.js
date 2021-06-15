@@ -21,19 +21,11 @@ export const languages = [{
     }
 ];
 
-function LanguageSelector({urlSlugs}) {
+function LanguageSelector() {
   const history = useHistory();
   const classes = useStyles();
   const handleClick = ({target}) => {
-    const index = history.location.pathname.lastIndexOf('/');
-    const slug = urlSlugs.find(slug => slug.navigationItem.system.language.system.codename === target.value);
-    if (!slug){
-      history.push(setLanguage(history.location, target.value));
-    }
-    else {
-      history.location.pathname = history.location.pathname.substring(0, index + 1) + slug.navigationItem.slug;
-      history.push(setLanguage(history.location, target.value));
-    }
+    history.push(setLanguage(history.location, target.value));
   }
   return (
     <MuiSelect

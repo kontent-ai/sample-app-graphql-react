@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function Header({ asset, title, mainMenuActions, urlSlugs }) {
+function Header({ asset, title, mainMenuActions }) {
   const classes = useStyles();
 
   return (
@@ -48,7 +48,7 @@ function Header({ asset, title, mainMenuActions, urlSlugs }) {
               <div className={classes.mainMenu}>
                 {mainMenuActions.map((navigationItem, index) =>
                     <Action key={index} action={navigationItem} />)}
-                <LanguageSelector urlSlugs={urlSlugs}/>
+                <LanguageSelector/>
               </div>
             </Hidden>
             <Hidden mdUp>
