@@ -1,70 +1,156 @@
-# Getting Started with Create React App
+# Kontent Sample app GraphQL React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Getting started
 
-## Available Scripts
+In this section you can find how to get the application ready in development mode.
 
-In the project directory, you can run:
+### Prerequisites
 
-### `npm start`
+- [Node.js](https://nodejs.org/en/download/) (LTS recommended)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Run site in development
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+In the project directory, install all dependencies.
 
-### `npm test`
+```sh
+npm install
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### (Optional) Create your own data source project in Kontent
 
-### `npm build`
+This optional section allows you to create your own copy of the project in Kontent so that you can make changes. If you skip this step, the application is connected to the published data of a shared project that is read-only via API for you.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### Create Kontent project
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. Create an account on Kontent
+   - [Create an account on Kontent.ai](https://app.kontent.ai/sign-up?utm_source=nextjs_boilerplate_example&utm_medium=devrel).
+2. After signing up, [create an empty project](https://docs.kontent.ai/tutorials/set-up-kontent/projects/manage-projects#a-creating-projects).
+3. Go to the "Project Settings", select API keys and copy the following keys for further reference
+   - Project ID
+   - Management API key
+4. Use the [Template Manager UI](https://kentico.github.io/kontent-template-manager/import) for importing the content from [`kontent-backup.zip`](./kontent-backup.zip) file and API keys from the previous step. Check _Publish language variants after import_ option before import.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+   > Alternatively, you can use the [Kontent Backup Manager](https://github.com/Kentico/kontent-backup-manager-js) and import data to the newly created project from [`kontent-backup.zip`](./kontent-backup.zip) file via command line:
+   >
+   > ```sh
+   >  npm i -g @kentico/kontent-backup-manager
+   >  # or
+   >  yarn global add @kentico/kontent-backup-manager
+   >
+   >  kbm --action=restore --projectId=<Project ID> --apiKey=<Management API key> --zipFilename=kontent-backup
+   > ```
+   >
+   > Go to your Kontent project and [publish the imported items](https://docs.kontent.ai/tutorials/write-and-collaborate/publish-your-work/publish-content-items).
 
-### `npm eject`
+#### Environment variables
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+1. Set up environment variables
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+   - Copy the `.env.template` file in this directory to `.env` (which will be ignored by Git):
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+     ```sh
+     cp .env.template .env
+     ```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+1. Run the development server
+
+   ```sh
+   npm run start
+   ```
+
+🎉 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+> By default, the content is loaded from a shared Kentico Kontent project. If you want to use your own clone of the project so that you can customize it and experiment with Kontent, continue to the next section.
+
+|              Variable              | Required | Description                                                                                     |
+| :--------------------------------: | :------: | :---------------------------------------------------------------------------------------------- |
+|    REACT_APP_KONTENT_PROJECT_ID    |    NO    | Project identification                                                                          |
+| REACT_APP_KONTENT_GRAPHQL_ENDPOINT |    NO    | Kontent GraphQL endpoint                                                                        |
+| REACT_APP_KONTENT_PREVIEW_API_KEY  |    NO    | Project key allowing to load non-published content described in the [Preview](#preview) section |
+
+## Content editing development
+
+Run the development server:
+
+```sh
+npm start
+```
+
+🎉 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying content in Kentico Kontent project. The page auto-updates as you edit the content. If you don't have `KONTENT_PREVIEW_API_KEY` specified, you need to [publish the changes](https://docs.kontent.ai/tutorials/write-and-collaborate/publish-your-work/publish-content-items) in order to see the changes on site.
+
+### Available Scripts
+
+- `npm start` - Runs the app in the development mode. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- `npm test` - Launches the test runner in the interactive watch mode. See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- `npm build` - Builds the app for production to the `build` folder. It correctly bundles React in production mode and optimizes the build for the best performance. See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- `npm eject` - **Note: this is a one-way operation. Once you `eject`, you can’t go back!** If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+
+## About
+
+This section describes the content model of the site and the use cases that are supposed to demonstrate GraphQL capabilities.
+
+### Content Model
+
+The site is using a simple layout. A header with a Logo and a menu.
+Depending on the type of the "Content" you can have one of the layouts:
+
+- Landing page - List of various sections displayed as rows.
+- Listing page - A grid of homogenous content pieces - specifically articles in the sample.
+- Simple page - A simple page rendering the title, subtitle, image, and rich text element.
+
+![Page types](./docs/Next.js%20site%20layout.png)
+
+## Layout - global/shared data
+
+### Menu
+
+### Sitemap construction
+
+
+
+## Simple page
+
+Rich tex resolution + formatted text
+
+### Components
+
+### Inline linked items
+
+### Links
+
+### Assets
+
+### Image transformation (hero image)
+
+## Landing page
+
+### Sections of the landing page linked items resolution
+
+Landing page - use components instead of linked items
+Projection per type
+
+## Listing page
+
+### Paging
+
+### Listing - detail
+
+### Filtering
+
+#### Filter blogs by author
+
+#### Filter blog by persona
+
+---
+
+## Preview
 
 ## Learn More
+
+> This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
