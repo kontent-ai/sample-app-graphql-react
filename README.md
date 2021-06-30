@@ -145,7 +145,7 @@ Hierarchical Sitemap is showcased under `/about-us/more-information`.
 
 ![Sitemap hierarchy](./docs/Sitemap-hierarchy-example.png)
 
-There are also "listing items" as usecased on `/blog` listing page containing detail pages `/blog/<POST-URL-SLUG>` i.e. `/blog/5-tips-to-solve-your-problems`. This registration is based in `Listing page` (described in [Content model section](#content-model)). Listing page specifies by the `content_type` text field what content items should be registered under it's route (expecting this type has URL slug set).
+> There are also `Listing pages` showcased on `/blog` listing page containing detail pages `/blog/<POST-URL-SLUG>` i.e. `/blog/5-tips-to-solve-your-problems`. This registration is based in `Listing page` (described in [Content model section](#content-model)). Listing page specifies by the `content_type` text field what content items should be registered under it's route (expecting this type has URL slug set) - more information in [Listing page section](#listing-page).
 
 ![Listing page items registration](./docs/listing-page-example.png)
 
