@@ -141,7 +141,7 @@ To achieve mapping "URL"<->"Navigation Item", there is a content type named `Nav
 
 ![Sitemap level](docs/Sitemap-top-level-model.png)
 
-Hierarchical SEO is showcased under `/about-us/more-information`.
+Hierarchical Sitemap is showcased under `/about-us/more-information`.
 
 ![Sitemap hierarchy](./docs/Sitemap-hierarchy-example.png)
 
