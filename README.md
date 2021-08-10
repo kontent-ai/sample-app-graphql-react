@@ -12,7 +12,7 @@ In this section you can find how to get the application ready in development mod
 
 ### Run site in development
 
-In the project directory, install all dependencies. And sun development
+In the project directory, install all dependencies and run the development environment.
 
 ```sh
 npm install
@@ -135,7 +135,7 @@ This data loaded in the [App component](./src/App.js) as part of the query. Simp
 
 ### Sitemap construction
 
-Element `subpages` of `Homepage`, prepared for [Web Spotlight feature](https://webspotlight.kontent.ai), is used as a root of the **Sitemap structure**. It is a root an hierarchical structure, that allows to map URLs items in the sitemap to content items and vice-versa.
+Element `subpages` of `Homepage`, prepared for [Web Spotlight feature](https://webspotlight.kontent.ai), is used as a root of the **Sitemap structure**. It is a hierarchical structure, that allows mapping URLs items in the sitemap to content items and vice-versa.
 
 To achieve mapping "URL"<->"Navigation Item", there is a content type named `Navigation Item` that could be linked hierarchically (since it is also containing `subpages` element). **This data (`mappings` property) is then used across tha application for link resolution.**
 
@@ -145,7 +145,7 @@ Hierarchical Sitemap is showcased under `/about-us/more-information`.
 
 ![Sitemap hierarchy](./docs/Sitemap-hierarchy-example.png)
 
-> There are also `Listing pages` showcased on `/blog` listing page containing detail pages `/blog/<POST-URL-SLUG>` i.e. `/blog/5-tips-to-solve-your-problems`. This registration is based in `Listing page` (described in [Content model section](#content-model)). Listing page specifies by the `content_type` text field what content items should be registered under it's route (expecting this type has URL slug set) - more information in [Listing page section](#listing-page).
+> There are also `Listing pages` showcased on `/blog` listing page containing detail pages `/blog/<POST-URL-SLUG>` i.e. `/blog/5-tips-to-solve-your-problems`. This registration is based in `Listing page` (described in [Content model section](#content-model)). Listing page specifies by the `content_type` text field what content items should be registered under its route (expecting this type has URL slug set) - more information in [Listing page section](#listing-page).
 
 ![Listing page items registration](./docs/listing-page-example.png)
 
@@ -428,7 +428,7 @@ Listing page showcase a various features you can stumble upon if you want to lis
 
 The core it so to implement the list with detail pages.
 
-What to list i defined in `Listing page` content type by `content_type` test element specifying, what types you want to list. It is possible to extend the use case, to define multiple types and limit/filter them somehow.
+What to list is defined in the `Listing page` content type by the `content_type` test element specifying, what types you want to list. It is possible to extend the use case, to define multiple types and limit/filter them somehow.
 
 ![Blog Listing page example](docs/listing-page-example.png)
 
@@ -503,7 +503,7 @@ query PostPageQuery($codename: String!) {
 
 ### Paging
 
-Paging information is provided by query string parameter `page`, so if you you want a second page the URL would be `/blog?page=2`. Size of page is hardcoded to `3`, but could be configurable as well as the pace number.
+Paging information is provided by query string parameter `page`, so if you want a second page the URL would be `/blog?page=2`. The size of the page is hardcoded to `3`, but could be configurable as well as the pace number.
 
 In GraphQl, you just use a filter in the query:
 
