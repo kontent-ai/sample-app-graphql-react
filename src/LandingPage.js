@@ -28,10 +28,10 @@ function LandingPage(props) {
         fragment LandingPageFields on LandingPage {
             sections {
                 items {
-                    system {
+                    _system {
                         codename
                         type {
-                            system {
+                            _system {
                                 codename
                             }
                         }
@@ -90,16 +90,16 @@ function LandingPage(props) {
                                     submitLabel
                                     fields {
                                         items{
-                                            system {
+                                            _system {
                                                 type {
-                                                    system {
+                                                    _system {
                                                         codename
                                                     }
                                                 }
                                             }
                                             ... on BaseFormField {
                                                 type {
-                                                    system {
+                                                    _system {
                                                         codename
                                                     }
                                                 }
@@ -107,7 +107,7 @@ function LandingPage(props) {
                                                 label
                                                 defaultValue
                                                 configuration {
-                                                    system{
+                                                    _system {
                                                         codename
                                                     }
                                                 }
@@ -233,7 +233,7 @@ function LandingPage(props) {
         <Layout {...props} seo={seo}>
             <Box className={classes.sections}>
                 {sectionItems.map((section, index) => {
-                    const contentType = upperFirst(camelCase(get(section, "system.type.system.codename", null)));
+                    const contentType = upperFirst(camelCase(get(section, "_system.type._system.codename", null)));
                     const Component = sections[contentType];
 
                     if (process.env.NODE_ENV === "development" && !Component) {

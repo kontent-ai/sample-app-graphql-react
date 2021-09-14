@@ -17,9 +17,9 @@ function Post(props) {
         query PostPageQuery($codename: String!){
             post(codename: $codename) {
                 ...PostSeoFields
-                system {
+                _system {
                     type {
-                        system {
+                        _system {
                             codename
                         }
                     }

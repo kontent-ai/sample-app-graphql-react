@@ -25,7 +25,7 @@ function ContentSection(props) {
   const imageSizes = `(min-width: ${theme.breakpoints.values.sm}px) 50vw, 100vw`;
 
   return (
-    <section id={get(section, "system.codename", null)} className={classes.section}>
+    <section id={get(section, "_system.codename", null)} className={classes.section}>
       <Container>
         <Grid container spacing={2} alignItems="stretch" direction="row-reverse">
 

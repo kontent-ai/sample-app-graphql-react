@@ -29,10 +29,10 @@ export default function App() {
       postCollection{
         items {
           slug,
-          system {
+          _system {
             codename,
             type {
-              system {
+              _system {
                 codename
               }
             }
@@ -43,10 +43,10 @@ export default function App() {
       homepage(codename: $codename) {
         content {
           items {
-            system {
+            _system {
               codename
               type {
-                system {
+                _system {
                   codename
                 }
               }
@@ -62,19 +62,19 @@ export default function App() {
           url
         }
         font {
-          system {
+          _system {
             codename
           }
         }
         palette {
-          system {
+          _system {
             codename
           }
         }
         mainMenu(limit: 1) {
           items {
             ... on Menu {
-              system {
+              _system {
                 codename
               }
               actions {
@@ -110,22 +110,22 @@ export default function App() {
   `;
 
   const getNavigationData = (parrentSlug, item) => {
-    if(item.system?.type?.system.codename === "post"){
+    if(item._system?.type?._system.codename === "post"){
       return {
         slug: parrentSlug.concat([item.slug]),
         navigationType: "post",
-        navigationCodename: item.system?.codename,
-        contentCodename: item.system?.codename,
-        contentType: item.system?.type.system.codename
+        navigationCodename: item._system?.codename,
+        contentCodename: item._system?.codename,
+        contentType: item._system?.type._system.codename
       }
     }
 
     return {
       slug: parrentSlug.concat([item.slug]),
       navigationType: "navigationItem",
-      navigationCodename: item.system?.codename,
-      contentCodename: item.content.items[0].system.codename,
-      contentType: item.content.items[0].system.type.system.codename
+      navigationCodename: item._system?.codename,
+      contentCodename: item.content.items[0]._system.codename,
+      contentType: item.content.items[0]._system.type._system.codename
     }
   };
 
@@ -136,8 +136,8 @@ export default function App() {
       slug: [],
       navigationCodename: homepageCodename,
       navigationType: "homepage",
-      contentCodename: data.homepage.content.items[0].system.codename,
-      contentType: data.homepage.content.items[0].system.type.system.codename
+      contentCodename: data.homepage.content.items[0]._system.codename,
+      contentType: data.homepage.content.items[0]._system.type._system.codename
     }];
 
     data.homepage.subpages.items.forEach(item => {
@@ -146,7 +146,7 @@ export default function App() {
       mappings.push(...item.subpages.items.map(subItem => getNavigationData(navigationData.slug, subItem)));
 
       const content = item.content.items[0];
-      if(content.system.type.system.codename === "listing_page"){
+      if(content._system.type._system.codename === "listing_page"){
         const listingData = data[`${content.contentType}Collection`];
         if (!listingData){
           console.error(`Unknown listing page content type: ${content.contentType}`);
@@ -175,8 +175,8 @@ export default function App() {
       title: get(data, "homepage.title", ""),
       mainMenuActions: get(data, "homepage.mainMenu.items[0].actions.items", []),
       favicon: get(data, "homepage.favicon[0].url", null),
-      font: get(data, "homepage.font[0].system.codename", null),
-      palette: get(data, "homepage.palette[0].system.codename", null)
+      font: get(data, "homepage.font[0]._system.codename", null),
+      palette: get(data, "homepage.palette[0]._system.codename", null)
     };
   };
 

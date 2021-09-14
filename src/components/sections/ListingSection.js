@@ -25,9 +25,9 @@ function ListingSection(props) {
     query ListingSectionQuery($limit: Int) {
       postCollection(limit: $limit){
         items {
-          system {
+          _system {
             type {
-              system {
+              _system {
                 codename
               }
             }
@@ -71,7 +71,7 @@ function ListingSection(props) {
   }
 
   return (
-    <section id={get(section, "system.codename", null)} className={classes.section}>
+    <section id={get(section, "_system.codename", null)} className={classes.section}>
       <Container>
         <div className={classes.intro}>
           {get(section, "title", null) && (
@@ -90,7 +90,7 @@ function ListingSection(props) {
         {relatedItemsData.length > 0 && (
           <Grid container spacing={2} alignItems="stretch">
             {relatedItemsData.map((item, item_idx) => {
-              const contentType = upperFirst(camelCase(get(item, "system.type.system.codename", null)));
+              const contentType = upperFirst(camelCase(get(item, "_system.type._system.codename", null)));
               const ThumbnailLayout = thumbnails[contentType];
 
               if (process.env.NODE_ENV === "development" && !ThumbnailLayout) {

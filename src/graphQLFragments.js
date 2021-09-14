@@ -2,16 +2,16 @@ import { gql } from '@apollo/client';
 
 export const subpageNavigationItemFields = gql`
     fragment SubpageNavigationItemFields on NavigationItem {
-        system {
+       _system {
             codename
         }
         slug
         content {
             items {
-                system {
+               _system {
                     codename
                     type {
-                        system {
+                       _system {
                             codename
                         }
                     }
@@ -29,11 +29,11 @@ export const richTextFields = gql`
     fragment RichTextFields on RichText {
         links {
             items {
-                system {
+               _system {
                     id
                     codename
                     type {
-                        system {
+                       _system {
                             codename
                         }
                     }
@@ -48,11 +48,11 @@ export const richTextFields = gql`
         }
         components {
             items {
-                system {
+               _system {
                     id
                     codename
                     type {
-                        system {
+                       _system {
                             codename
                         }
                     }
@@ -76,7 +76,7 @@ export const postSeoFields = gql`
         seoDescription
         seoKeywords
         seoOptions {
-            system {
+           _system {
                 codename
             }
         }
@@ -90,7 +90,7 @@ export const homePageSeoFields = gql`
         seoDescription
         seoKeywords
         seoOptions {
-            system {
+           _system {
                 codename
             }
         }
@@ -104,7 +104,7 @@ export const navigationSeoFields = gql`
         seoDescription
         seoKeywords
         seoOptions {
-            system {
+           _system {
                 codename
             }
         }
@@ -114,15 +114,15 @@ export const navigationSeoFields = gql`
 
 export const actionFields = gql`
     fragment ActionFields on Action {
-        system {
+       _system {
             codename
         }
         label
         navigationItem {
             items {
-                system {
+               _system {
                     type {
-                        system {
+                       _system {
                             codename
                         }
                     }
@@ -136,10 +136,10 @@ export const actionFields = gql`
                     slug
                     content {
                         items {
-                            system {
+                           _system {
                                 codename
                                 type {
-                                    system {
+                                   _system {
                                         codename
                                     }
                                 }
@@ -150,12 +150,12 @@ export const actionFields = gql`
             }
         }
         options {
-            system {
+           _system {
                 codename
             }
         }
         role {
-            system {
+           _system {
                 codename
             }
         }
@@ -163,15 +163,15 @@ export const actionFields = gql`
             items {
                 ... on Icon {
                     iconPosition {
-                        system {
+                       _system {
                             codename
                         }
                     }
-                    system {
+                   _system {
                         codename
                     }
                     icon {
-                        system {
+                       _system {
                             codename
                         }
                     }

@@ -51,7 +51,7 @@ function RichText(props) {
       richTextElement={richTextElement}
       mappings={mappings}
       resolveLinkedItem={(linkedItem, domNode, domToReact) => {
-        switch (linkedItem?.system.type.system.codename) {
+        switch (linkedItem?._system.type._system.codename) {
           case "quote":
             return (
               <blockquote className={classes.quote}>
@@ -83,7 +83,7 @@ function RichText(props) {
         );
       }}
       resolveLink={(link, mappings, domNode, domToReact) => {
-        const url = getUrlFromMapping(mappings, link.system.codename);
+        const url = getUrlFromMapping(mappings, link._system.codename);
         if (url) {
           return (
             <Link href={url}>

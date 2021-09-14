@@ -33,16 +33,16 @@ function ListingPage(props) {
                 items {
                     firstName
                     lastName
-                    system {
+                    _system {
                         codename
                     }
                 }
             }
             postCollection(limit: $limit, offset: $offset, where: {authorLinksCodename: $author, personaLinksTerm: $persona}) {
                 items {
-                    system {
+                    _system {
                         type {
-                            system {
+                            _system {
                                 codename
                             }
                         }
@@ -103,7 +103,7 @@ function ListingPage(props) {
             setAuthors(data.authorCollection.items.map(author => {
                 return {
                     name: `${author.firstName} ${author.lastName}`,
-                    codename: author.system.codename
+                    codename: author._system.codename
                 }
             }));
             
@@ -139,7 +139,7 @@ function ListingPage(props) {
                 <Filter label="Persona" parameterName="persona" options={personas} updateLocation={setPersona} getValueFromLocation={getPersona} />
                 {relatedItems.length > 0 && <Grid container spacing={4} alignItems="stretch">
                     {relatedItems.map((item, item_idx) => {
-                        const contentType = upperFirst(camelCase(get(item, "system.type.system.codename", null)));
+                        const contentType = upperFirst(camelCase(get(item, "_system.type._system.codename", null)));
                         const ThumbnailLayout = thumbnailLayouts[contentType];
                         if (process.env.NODE_ENV === "development" && !ThumbnailLayout) {
                             console.error(`Unknown section component for section content type: ${contentType}`);
