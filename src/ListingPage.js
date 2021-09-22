@@ -28,7 +28,8 @@ const useStyles = makeStyles((theme) => ({
 
 function ListingPage(props) {
     const listingPageQuery = gql`
-        query ListingPageQuery($limit: Int, $offset: Int, $codename: String!, $author: String, $persona: String){
+        # TODO add persona once https://kentico.atlassian.net/browse/DEL-3086 is done
+        query ListingPageQuery($limit: Int, $offset: Int, $codename: String! ${props.author ? ", $author: String!" : ""}){
             authorCollection {
                 items {
                     firstName
@@ -38,7 +39,8 @@ function ListingPage(props) {
                     }
                 }
             }
-            postCollection(limit: $limit, offset: $offset, where: {authorLinksCodename: $author, personaLinksTerm: $persona}) {
+            # TODO add persona once https://kentico.atlassian.net/browse/DEL-3086 is done
+            postCollection(limit: $limit, offset: $offset, ${props.author ? "where: {author: {containsAny: [$author]} }" : ""}) {
                 items {
                     _system {
                         type {
@@ -90,7 +92,7 @@ function ListingPage(props) {
     const [seo, setSeo] = useState(null);
 
     const { loading, error, data } = useQuery(listingPageQuery, {
-        variables: { codename: props.codename, author: props.author, persona: props.persona, limit: props.limit, offset: props.offset },
+        variables: { codename: props.codename, author: props.author,/* persona: props.persona,*/ limit: props.limit, offset: props.offset },
         onCompleted: (data) => {
             const collection = data[`${data.navigationItem.content.items[0].contentType}Collection`];
             if (collection) {
@@ -106,7 +108,7 @@ function ListingPage(props) {
                     codename: author._system.codename
                 }
             }));
-            
+
             // TODO update hardcoded personas and load them from Kontent
             setPersonas([{
                 name: "Developer",
@@ -136,7 +138,7 @@ function ListingPage(props) {
         <Layout {...props} seo={seo}>
             <Container className={classes.root}>
                 <Filter label="Author" parameterName="author" options={authors} updateLocation={setAuthor} getValueFromLocation={getAuthor} />
-                <Filter label="Persona" parameterName="persona" options={personas} updateLocation={setPersona} getValueFromLocation={getPersona} />
+                {/* <Filter label="Persona" parameterName="persona" options={personas} updateLocation={setPersona} getValueFromLocation={getPersona} /> */}
                 {relatedItems.length > 0 && <Grid container spacing={4} alignItems="stretch">
                     {relatedItems.map((item, item_idx) => {
                         const contentType = upperFirst(camelCase(get(item, "_system.type._system.codename", null)));
