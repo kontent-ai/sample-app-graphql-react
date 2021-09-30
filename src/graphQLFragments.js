@@ -70,45 +70,17 @@ export const richTextFields = gql`
     }
 `;
 
-export const postSeoFields = gql`
-    fragment PostSeoFields on Post {
-        seoCanonicalUrl
-        seoDescription
-        seoKeywords
-        seoOptions {
-           _system {
+export const seoFields = gql`
+    fragment SeoFields on Seo {
+        canonicalUrl
+        description
+        keywords
+        options {
+            _system {
                 codename
             }
         }
-        seoTitle
-    }
-`;
-
-export const homePageSeoFields = gql`
-    fragment HomePageSeoFields on Homepage {
-        seoCanonicalUrl
-        seoDescription
-        seoKeywords
-        seoOptions {
-           _system {
-                codename
-            }
-        }
-        seoTitle
-    }
-`;
-
-export const navigationSeoFields = gql`
-    fragment NavigationSeoFields on NavigationItem {
-        seoCanonicalUrl
-        seoDescription
-        seoKeywords
-        seoOptions {
-           _system {
-                codename
-            }
-        }
-        seoTitle
+        title
     }
 `;
 
@@ -131,7 +103,9 @@ export const actionFields = gql`
                     url
                 }
                 ... on NavigationItem {
-                    ...NavigationSeoFields
+                    seo {
+                        ...SeoFields
+                    }
                     label
                     slug
                     content {

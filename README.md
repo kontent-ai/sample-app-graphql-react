@@ -469,6 +469,8 @@ The implementation of the listing page is stored in `src/ListingPage.js`.
 
 Detail page of the post is implemented in `~src/Post.js`:
 
+// TODSO fix SEO fields
+
 ```graphql
 query PostPageQuery($codename: String!) {
   post(codename: $codename) {

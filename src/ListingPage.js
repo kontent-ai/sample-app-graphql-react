@@ -6,7 +6,7 @@ import { Container, Grid, makeStyles, Paper } from "@material-ui/core";
 import thumbnailLayouts from "./components/thumbnails";
 import React, { useState } from 'react';
 import { gql, useQuery } from '@apollo/client';
-import { assetFields, navigationSeoFields } from './graphQLFragments';
+import { assetFields, seoFields } from './graphQLFragments';
 import getSeo from './utils/getSeo';
 import { getAuthor, getPersona, setAuthor, setPersona } from './utils/queryString';
 
@@ -66,8 +66,9 @@ function ListingPage(props) {
                 }
             }
             navigationItem(codename: $codename) {
-                ...NavigationSeoFields
-                
+                seo {
+                    ...SeoFields
+                }
                 content {
                     items {
                         ... on ListingPage {
@@ -79,7 +80,7 @@ function ListingPage(props) {
         }
 
         ${assetFields}
-        ${navigationSeoFields}
+        ${seoFields}
     `;
 
     const classes = useStyles();
@@ -113,7 +114,7 @@ function ListingPage(props) {
                 codename: "developer"
             }]);
 
-            setSeo(getSeo(data.navigationItem));
+            setSeo(getSeo(data.navigationItem.seo));
         }
     }, [props.codename, props.author, props.persona, props.limit, props.offset]);
 

@@ -3,7 +3,7 @@ import { Image, Layout, RichText, GraphQLLoader } from "./components";
 import { Container, makeStyles, Typography, useTheme } from "@material-ui/core";
 import React, { useState } from 'react';
 import { gql, useQuery } from '@apollo/client';
-import { assetFields, postSeoFields, richTextFields } from './graphQLFragments';
+import { assetFields, seoFields, richTextFields } from './graphQLFragments';
 import getSeo from './utils/getSeo';
 
 const useStyles = makeStyles((theme) => ({
@@ -16,7 +16,9 @@ function Post(props) {
     const postPageQuery = gql`
         query PostPageQuery($codename: String!){
             post(codename: $codename) {
-                ...PostSeoFields
+                seo {
+                    ...SeoFields
+                }
                 _system {
                     type {
                         _system {
@@ -44,7 +46,7 @@ function Post(props) {
             }
         }
 
-        ${postSeoFields}
+        ${seoFields}
         ${assetFields}
         ${richTextFields}
     `;
@@ -60,12 +62,12 @@ function Post(props) {
         variables: { codename: props.codename },
         onCompleted: (data) => {
             setPost(data.post);
-            setSeo(getSeo(data.post))
+            setSeo(getSeo(data.post.seo))
         }
     }, [props.codename]);
 
-    if(error || loading || !post) {
-        return <GraphQLLoader error={error} loading={loading}/>;
+    if (error || loading || !post) {
+        return <GraphQLLoader error={error} loading={loading} />;
     }
 
     return (
@@ -98,7 +100,7 @@ function Post(props) {
                 <footer>
                     <time>{get(post, "publishingDate", null) && new Date(get(post, "publishingDate", null)).toDateString()}</time>
                     {get(post, "author.items[0]", null) &&
-                    (", by " + get(post, "author.items[0].firstName", null) + " " + get(post, "author.items[0].lastName", null))}
+                        (", by " + get(post, "author.items[0].firstName", null) + " " + get(post, "author.items[0].lastName", null))}
                 </footer>
             </Container>
         </Layout>
