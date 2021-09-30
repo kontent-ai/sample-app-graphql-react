@@ -2,14 +2,14 @@ import get from "lodash.get";
 import upperFirst from "lodash.upperfirst";
 import camelCase from "lodash.camelcase";
 import { Layout, UnknownComponent, GraphQLLoader } from "./components";
-import sections from "./components/sections";
+import * as sections from "./components/sections";
 import { Box, makeStyles } from "@material-ui/core";
 import React, { useState } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import {
     actionFields,
     assetFields,
-    navigationSeoFields,
+    seoFields,
     richTextFields,
 } from './graphQLFragments';
 import getSeo from './utils/getSeo';
@@ -28,10 +28,10 @@ function LandingPage(props) {
         fragment LandingPageFields on LandingPage {
             sections {
                 items {
-                    system {
+                    _system {
                         codename
                         type {
-                            system {
+                            _system {
                                 codename
                             }
                         }
@@ -90,16 +90,16 @@ function LandingPage(props) {
                                     submitLabel
                                     fields {
                                         items{
-                                            system {
+                                            _system {
                                                 type {
-                                                    system {
+                                                    _system {
                                                         codename
                                                     }
                                                 }
                                             }
                                             ... on BaseFormField {
                                                 type {
-                                                    system {
+                                                    _system {
                                                         codename
                                                     }
                                                 }
@@ -107,7 +107,7 @@ function LandingPage(props) {
                                                 label
                                                 defaultValue
                                                 configuration {
-                                                    system{
+                                                    _system {
                                                         codename
                                                     }
                                                 }
@@ -182,13 +182,15 @@ function LandingPage(props) {
         ${richTextFields}
         ${assetFields}
         ${actionFields}
-        ${navigationSeoFields}
+        ${seoFields}
     `;
 
     const navigationAndLandingPageQuery = gql`
         query NavigationAndLandingPageQuery($codename: String!) {
             navigationItem(codename: $codename){
-                ...NavigationSeoFields
+                seo {
+                    ...SeoFields
+                }
                 content {
                     items {
                         ... on LandingPage {
@@ -203,7 +205,7 @@ function LandingPage(props) {
         ${richTextFields}
         ${assetFields}
         ${actionFields}
-        ${navigationSeoFields}
+        ${seoFields}
     `;
 
     const classes = useStyles();
@@ -220,7 +222,7 @@ function LandingPage(props) {
             }
             else {
                 setSectionItems(data.navigationItem.content.items[0].sections.items);
-                setSeo(getSeo(data.navigationItem));
+                setSeo(getSeo(data.navigationItem.seo));
             }
         }
     }, [props.codename, props.seo]);
@@ -233,7 +235,7 @@ function LandingPage(props) {
         <Layout {...props} seo={seo}>
             <Box className={classes.sections}>
                 {sectionItems.map((section, index) => {
-                    const contentType = upperFirst(camelCase(get(section, "system.type.system.codename", null)));
+                    const contentType = upperFirst(camelCase(get(section, "_system.type._system.codename", null)));
                     const Component = sections[contentType];
 
                     if (process.env.NODE_ENV === "development" && !Component) {

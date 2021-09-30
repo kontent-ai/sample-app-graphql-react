@@ -1,11 +1,11 @@
 import get from 'lodash.get';
 
-export default function getSeo(data) {
-  const description = get(data, "seoDescription", null); // pageProps
-  const keyWords = get(data, "seoKeywords", null); // pageProps
-  const canonicalUrl = get(data, "seoCanonicalUrl", null); // pageProps
-  const noIndex = get(data, "seoNoIndex", null); // pageProps
-  const title = get(data, "seoTitle", null);
+export default function getSeo(seo) {
+  const description = get(seo, "description", null); // pageProps
+  const keyWords = get(seo, "keywords", null); // pageProps
+  const canonicalUrl = get(seo, "canonicalUrl", null); // pageProps
+  const noIndex = get(seo, "noIndex", null); // pageProps
+  const title = get(seo, "title", null);
 
   return {
     description,

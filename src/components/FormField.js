@@ -18,14 +18,16 @@ const useStyles = makeStyles((theme) => ({
 
 function FormField(props) {
   const classes = useStyles();
+  const [selectBoxValue, setSelectBoxValue] = React.useState('');
+
   let field = get(props, "field", null);
 
   let fieldComponent;
 
-  if (field.system.type.system.codename === "base_form_field") {
+  if (field._system.type._system.codename === "base_form_field") {
 
-    const isTextArea = get(field, "type[0].system.codename") === "textarea";
-    const isCheckbox = get(field, "type[0].system.codename") === "checkbox";
+    const isTextArea = get(field, "type[0]._system.codename") === "textarea";
+    const isCheckbox = get(field, "type[0]._system.codename") === "checkbox";
     if (isCheckbox) {
       fieldComponent = (
         <FormGroup className={classes.checkbox}>
@@ -40,12 +42,12 @@ function FormField(props) {
     else {
       fieldComponent = (
         <TextField
-          type={get(field, "type[0].system.codename")}
+          type={get(field, "type[0]._system.codename")}
           multiline={isTextArea ? true : false}
           rows={isTextArea ? 4 : undefined}
           label={get(field, "label", null)}
           placeholder={get(field, "defaultValue", null)}
-          required={get(field, "configuration", []).some(config => config.system.codename === "required")}
+          required={get(field, "configuration", []).some(config => config._system.codename === "required")}
           name={get(field, "name", null)}
           className={`${classes.formControl} ${isTextArea ? classes.textArea : null}`}
         />
@@ -53,7 +55,11 @@ function FormField(props) {
       );
     }
   }
-  else if (field.system.type.system.codename === "select_form_field") {
+  else if (field._system.type._system.codename === "select_form_field") {
+    const handleChange = (event) => {
+      setSelectBoxValue(event.target.value);
+    };
+
     fieldComponent = (
       <FormControl
         className={classes.formControl}>
@@ -61,7 +67,8 @@ function FormField(props) {
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value=''
+          onChange={handleChange}
+          value={selectBoxValue}
         >
           {get(field, "options.items", []).map(option => (
             <MenuItem key={get(option, "value")} value={get(option, "value")}>{get(option, "label")}</MenuItem>

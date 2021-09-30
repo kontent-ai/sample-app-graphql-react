@@ -5,13 +5,13 @@ import { Link, Icon } from ".";
 function Action(props) {
   const { action } = props;
   const navigationItem = get(action, "navigationItem.items[0]", null);
-  const href = navigationItem.system.type.codename === "external_url" ?
+  const href = navigationItem._system.type.codename === "external_url" ?
                get(navigationItem, "url") : get(navigationItem, "slug");
   const action_options = get(action, "options", []);
 
 
-  const role = get(action, "role[0].system.codename", null);
-  const outlined = action_options.some(item => item.system.codename === "outlined");
+  const role = get(action, "role[0]._system.codename", null);
+  const outlined = action_options.some(item => item._system.codename === "outlined");
   const config = {};
   if (role) {
     config.variant = "contained";
@@ -21,10 +21,10 @@ function Action(props) {
     config.variant = "outlined";
   }
 
-  const new_window = action_options.some(item => item.system.codename === "new_window");
-  const no_follow = action_options.some(item => item.system.codename === "no_follow");
+  const new_window = action_options.some(item => item._system.codename === "new_window");
+  const no_follow = action_options.some(item => item._system.codename === "no_follow");
   const icon = get(action, "icon.items[0]", null);
-  const iconPosition = get(icon, "iconPosition[0].system.codename", null);
+  const iconPosition = get(icon, "iconPosition[0]._system.codename", null);
   const options = {
     target: new_window ? "_blank" : undefined,
     rel: new_window || no_follow

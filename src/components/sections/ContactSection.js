@@ -16,7 +16,7 @@ function ContactSection(props) {
   const classes = useStyles();
 
   return (
-    <section id={get(section, "system.codename", null)} className={classes.section}>
+    <section id={get(section, "_system.codename", null)} className={classes.section}>
       <Container>
         <div className={classes.intro}>
           {get(section, "title", null) && (

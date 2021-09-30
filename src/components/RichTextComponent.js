@@ -37,7 +37,7 @@ function replaceNode(domNode, richTextElement, linkedItems, mappings, resolveLin
   if (resolveLink && links?.items) {
     if (isLink(domNode)) {
       const linkId = domNode.attribs?.[LINKED_ITEM_ID_ATTRIBUTE_IDENTIFIER];
-      const link = links.items.find(link => link.system.id === linkId);
+      const link = links.items.find(link => link._system.id === linkId);
       return resolveLink(link, mappings, domNode, domToReact);
     }
   }
@@ -50,7 +50,7 @@ function replaceNode(domNode, richTextElement, linkedItems, mappings, resolveLin
 function RichTextComponent({ richTextElement, mappings, resolveLinkedItem, resolveImage, resolveLink, resolveDomNode, className }) {
   const cleanedValue = richTextElement.html.replace(/(\n|\r)+/, "");
   const linkedItems = richTextElement.components?.items.reduce((result, item) => {
-    result[item.system.codename] = item;
+    result[item._system.codename] = item;
 
     return result;
   },{}) || {};

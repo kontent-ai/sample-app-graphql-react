@@ -3,12 +3,12 @@ import upperFirst from "lodash.upperfirst";
 import camelCase from "lodash.camelcase";
 import { Layout, UnknownComponent, Link, Filter, GraphQLLoader } from "./components";
 import { Container, Grid, makeStyles, Paper } from "@material-ui/core";
-import thumbnailLayouts from "./components/thumbnails";
+import * as thumbnailLayouts from "./components/thumbnails";
 import React, { useState } from 'react';
 import { gql, useQuery } from '@apollo/client';
-import { assetFields, navigationSeoFields } from './graphQLFragments';
+import { assetFields, seoFields } from './graphQLFragments';
 import getSeo from './utils/getSeo';
-import { getAuthor, getPersona, setAuthor, setPersona } from './utils/queryString';
+import { getAuthor, setAuthor } from './utils/queryString';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -28,21 +28,23 @@ const useStyles = makeStyles((theme) => ({
 
 function ListingPage(props) {
     const listingPageQuery = gql`
-        query ListingPageQuery($limit: Int, $offset: Int, $codename: String!, $author: String, $persona: String){
+        # TODO add persona once https://kentico.atlassian.net/browse/DEL-3086 is done
+        query ListingPageQuery($limit: Int, $offset: Int, $codename: String! ${props.author ? ", $author: String!" : ""}){
             authorCollection {
                 items {
                     firstName
                     lastName
-                    system {
+                    _system {
                         codename
                     }
                 }
             }
-            postCollection(limit: $limit, offset: $offset, where: {authorLinksCodename: $author, personaLinksTerm: $persona}) {
+            # TODO add persona once https://kentico.atlassian.net/browse/DEL-3086 is done
+            postCollection(limit: $limit, offset: $offset, ${props.author ? "where: {author: {containsAny: [$author]} }" : ""}) {
                 items {
-                    system {
+                    _system {
                         type {
-                            system {
+                            _system {
                                 codename
                             }
                         }
@@ -66,8 +68,9 @@ function ListingPage(props) {
                 }
             }
             navigationItem(codename: $codename) {
-                ...NavigationSeoFields
-                
+                seo {
+                    ...SeoFields
+                }
                 content {
                     items {
                         ... on ListingPage {
@@ -79,18 +82,18 @@ function ListingPage(props) {
         }
 
         ${assetFields}
-        ${navigationSeoFields}
+        ${seoFields}
     `;
 
     const classes = useStyles();
 
     const [relatedItems, setRelatedItems] = useState([]);
     const [authors, setAuthors] = useState([]);
-    const [personas, setPersonas] = useState([]);
+    // const [personas, setPersonas] = useState([]);
     const [seo, setSeo] = useState(null);
 
     const { loading, error, data } = useQuery(listingPageQuery, {
-        variables: { codename: props.codename, author: props.author, persona: props.persona, limit: props.limit, offset: props.offset },
+        variables: { codename: props.codename, author: props.author,/* persona: props.persona,*/ limit: props.limit, offset: props.offset },
         onCompleted: (data) => {
             const collection = data[`${data.navigationItem.content.items[0].contentType}Collection`];
             if (collection) {
@@ -103,17 +106,17 @@ function ListingPage(props) {
             setAuthors(data.authorCollection.items.map(author => {
                 return {
                     name: `${author.firstName} ${author.lastName}`,
-                    codename: author.system.codename
+                    codename: author._system.codename
                 }
             }));
-            
-            // TODO update hardcoded personas and load them from Kontent
-            setPersonas([{
-                name: "Developer",
-                codename: "developer"
-            }]);
 
-            setSeo(getSeo(data.navigationItem));
+            // TODO update hardcoded personas and load them from Kontent
+            // setPersonas([{
+            //     name: "Developer",
+            //     codename: "developer"
+            // }]);
+
+            setSeo(getSeo(data.navigationItem.seo));
         }
     }, [props.codename, props.author, props.persona, props.limit, props.offset]);
 
@@ -136,10 +139,10 @@ function ListingPage(props) {
         <Layout {...props} seo={seo}>
             <Container className={classes.root}>
                 <Filter label="Author" parameterName="author" options={authors} updateLocation={setAuthor} getValueFromLocation={getAuthor} />
-                <Filter label="Persona" parameterName="persona" options={personas} updateLocation={setPersona} getValueFromLocation={getPersona} />
+                {/* <Filter label="Persona" parameterName="persona" options={personas} updateLocation={setPersona} getValueFromLocation={getPersona} /> */}
                 {relatedItems.length > 0 && <Grid container spacing={4} alignItems="stretch">
                     {relatedItems.map((item, item_idx) => {
-                        const contentType = upperFirst(camelCase(get(item, "system.type.system.codename", null)));
+                        const contentType = upperFirst(camelCase(get(item, "_system.type._system.codename", null)));
                         const ThumbnailLayout = thumbnailLayouts[contentType];
                         if (process.env.NODE_ENV === "development" && !ThumbnailLayout) {
                             console.error(`Unknown section component for section content type: ${contentType}`);

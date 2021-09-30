@@ -9,10 +9,3 @@ export {
   srcIsKontentAsset,
   getUrlSlug,
 };
-
-export default {
-  getUrlFromMapping,
-  kontentImageLoader,
-  srcIsKontentAsset,
-  getUrlSlug
-};

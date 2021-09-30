@@ -3,7 +3,7 @@ import { Image, Layout, RichText, GraphQLLoader } from "./components";
 import { Container, makeStyles, Typography, useTheme } from "@material-ui/core";
 import React, { useState } from 'react';
 import { gql, useQuery } from '@apollo/client';
-import { assetFields, navigationSeoFields, richTextFields } from './graphQLFragments';
+import { assetFields, seoFields, richTextFields } from './graphQLFragments';
 import getSeo from './utils/getSeo';
 
 const useStyles = makeStyles((theme) => ({
@@ -40,7 +40,9 @@ function SimplePage(props) {
     const navigationAndSimplePageQuery = gql`
         query NavigationAndSimplePageQuery($codename: String!) {
             navigationItem(codename: $codename){
-                ...NavigationSeoFields
+                seo {
+                    ...SeoFields
+                }
                 content {
                     items {
                         ... on SimplePage {
@@ -54,7 +56,7 @@ function SimplePage(props) {
         ${simplePageFields}
         ${assetFields}
         ${richTextFields}
-        ${navigationSeoFields}
+        ${seoFields}
     `;
 
     const classes = useStyles();
@@ -62,24 +64,24 @@ function SimplePage(props) {
     const imageSizes = `${theme.breakpoints.values.md}px`;
 
     const [page, setPage] = useState(null);
-    const [seo, setSeo] = useState({ });
+    const [seo, setSeo] = useState({});
 
     const { loading, error } = useQuery(props.seo ? simplePageQuery : navigationAndSimplePageQuery, {
         variables: { codename: props.codename },
         onCompleted: (data) => {
-            if(props.seo){
+            if (props.seo) {
                 setPage(data.simplePage);
                 setSeo(props.seo);
             }
-            else{
+            else {
                 setPage(data.navigationItem.content.items[0]);
-                setSeo(getSeo(data.navigationItem));
+                setSeo(getSeo(data.navigationItem.seo));
             }
         }
     }, [props.codename, props.seo]);
 
-    if(error || loading || !page) {
-        return <GraphQLLoader error={error} loading={loading}/>;
+    if (error || loading || !page) {
+        return <GraphQLLoader error={error} loading={loading} />;
     }
 
     return (

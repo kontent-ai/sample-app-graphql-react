@@ -31,7 +31,7 @@ function FeaturesSection(props) {
   const imageSizes = `(min-width: ${theme.breakpoints.values.sm}px) 40vw, 100vw`;
 
   return (
-    <section id={get(section, "system.codename", null)} className={classes.section}>
+    <section id={get(section, "_system.codename", null)} className={classes.section}>
       <Container>
         <div className={classes.intro}>
           {get(section, "title", null) && (

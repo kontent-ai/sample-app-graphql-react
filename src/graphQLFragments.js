@@ -2,16 +2,16 @@ import { gql } from '@apollo/client';
 
 export const subpageNavigationItemFields = gql`
     fragment SubpageNavigationItemFields on NavigationItem {
-        system {
+       _system {
             codename
         }
         slug
         content {
             items {
-                system {
+               _system {
                     codename
                     type {
-                        system {
+                       _system {
                             codename
                         }
                     }
@@ -29,11 +29,11 @@ export const richTextFields = gql`
     fragment RichTextFields on RichText {
         links {
             items {
-                system {
+               _system {
                     id
                     codename
                     type {
-                        system {
+                       _system {
                             codename
                         }
                     }
@@ -48,11 +48,11 @@ export const richTextFields = gql`
         }
         components {
             items {
-                system {
+               _system {
                     id
                     codename
                     type {
-                        system {
+                       _system {
                             codename
                         }
                     }
@@ -70,59 +70,31 @@ export const richTextFields = gql`
     }
 `;
 
-export const postSeoFields = gql`
-    fragment PostSeoFields on Post {
-        seoCanonicalUrl
-        seoDescription
-        seoKeywords
-        seoOptions {
-            system {
+export const seoFields = gql`
+    fragment SeoFields on Seo {
+        canonicalUrl
+        description
+        keywords
+        options {
+            _system {
                 codename
             }
         }
-        seoTitle
-    }
-`;
-
-export const homePageSeoFields = gql`
-    fragment HomePageSeoFields on Homepage {
-        seoCanonicalUrl
-        seoDescription
-        seoKeywords
-        seoOptions {
-            system {
-                codename
-            }
-        }
-        seoTitle
-    }
-`;
-
-export const navigationSeoFields = gql`
-    fragment NavigationSeoFields on NavigationItem {
-        seoCanonicalUrl
-        seoDescription
-        seoKeywords
-        seoOptions {
-            system {
-                codename
-            }
-        }
-        seoTitle
+        title
     }
 `;
 
 export const actionFields = gql`
     fragment ActionFields on Action {
-        system {
+       _system {
             codename
         }
         label
         navigationItem {
             items {
-                system {
+               _system {
                     type {
-                        system {
+                       _system {
                             codename
                         }
                     }
@@ -131,15 +103,17 @@ export const actionFields = gql`
                     url
                 }
                 ... on NavigationItem {
-                    ...NavigationSeoFields
+                    seo {
+                        ...SeoFields
+                    }
                     label
                     slug
                     content {
                         items {
-                            system {
+                           _system {
                                 codename
                                 type {
-                                    system {
+                                   _system {
                                         codename
                                     }
                                 }
@@ -150,12 +124,12 @@ export const actionFields = gql`
             }
         }
         options {
-            system {
+           _system {
                 codename
             }
         }
         role {
-            system {
+           _system {
                 codename
             }
         }
@@ -163,15 +137,15 @@ export const actionFields = gql`
             items {
                 ... on Icon {
                     iconPosition {
-                        system {
+                       _system {
                             codename
                         }
                     }
-                    system {
+                   _system {
                         codename
                     }
                     icon {
-                        system {
+                       _system {
                             codename
                         }
                     }

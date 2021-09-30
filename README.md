@@ -120,12 +120,12 @@ This data loaded in the [App component](./src/App.js) as part of the query. Simp
       url
     }
     font {
-      system {
+      _system {
         codename
       }
     }
     palette {
-      system {
+      _system {
         codename
       }
     }
@@ -188,7 +188,7 @@ Simplified version of the data loading:
     mainMenu(limit: 1) {
       items {
         ... on Menu {
-          system {
+          _system {
             codename
           }
           actions {
@@ -223,11 +223,11 @@ Following sections showcase what properties you could use to load this data. All
       html
       components {
         items {
-          system {
+          _system {
             id
             codename
             type {
-              system {
+              _system {
                 codename
               }
             }
@@ -257,11 +257,11 @@ Following sections showcase what properties you could use to load this data. All
       html
       modularContent {
         items {
-          system {
+          _system {
             id
             codename
             type {
-              system {
+              _system {
                 codename
               }
             }
@@ -346,10 +346,10 @@ In this use case it is a list of section and application is using `system.type` 
   landingPage(codename: "main_content") {
     sections {
       items {
-        system {
+        _system {
           codename
           type {
-            system {
+            _system {
               codename
             }
           }
@@ -439,9 +439,9 @@ The implementation of the listing page is stored in `src/ListingPage.js`.
   postCollection {
     # Strongly typed collections of items based on `Post`content type
     items {
-      system {
+      _system {
         type {
-          system {
+          _system {
             codename
           }
         }
@@ -469,13 +469,15 @@ The implementation of the listing page is stored in `src/ListingPage.js`.
 
 Detail page of the post is implemented in `~src/Post.js`:
 
+// TODSO fix SEO fields
+
 ```graphql
 query PostPageQuery($codename: String!) {
   post(codename: $codename) {
     ...PostSeoFields # see ~/src/graphQLFragments.js
-    system {
+    _system {
       type {
-        system {
+        _system {
           codename
         }
       }

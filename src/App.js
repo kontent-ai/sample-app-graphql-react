@@ -15,13 +15,12 @@ import { UnknownComponent } from './components';
 import {
   actionFields,
   assetFields,
-  homePageSeoFields,
-  navigationSeoFields,
+  seoFields,
   subpageNavigationItemFields
 } from './graphQLFragments';
 import GraphQLLoader from './components/GraphQLLoader';
 import getSeo from './utils/getSeo';
-import {getListingPaginationAndFilter} from './utils/queryString';
+import { getListingPaginationAndFilter } from './utils/queryString';
 
 export default function App() {
   const homePageQuery = gql`
@@ -29,10 +28,10 @@ export default function App() {
       postCollection{
         items {
           slug,
-          system {
+          _system {
             codename,
             type {
-              system {
+              _system {
                 codename
               }
             }
@@ -43,17 +42,19 @@ export default function App() {
       homepage(codename: $codename) {
         content {
           items {
-            system {
+            _system {
               codename
               type {
-                system {
+                _system {
                   codename
                 }
               }
             }
           }
         }
-        ...HomePageSeoFields
+        seo {
+        ...SeoFields
+        }
         headerLogo {
           ...AssetFields
         }
@@ -62,19 +63,19 @@ export default function App() {
           url
         }
         font {
-          system {
+          _system {
             codename
           }
         }
         palette {
-          system {
+          _system {
             codename
           }
         }
         mainMenu(limit: 1) {
           items {
             ... on Menu {
-              system {
+              _system {
                 codename
               }
               actions {
@@ -102,30 +103,29 @@ export default function App() {
       }
     }
 
-    ${homePageSeoFields}
-    ${navigationSeoFields}
+    ${seoFields}
     ${assetFields}
     ${actionFields}
     ${subpageNavigationItemFields}
   `;
 
   const getNavigationData = (parrentSlug, item) => {
-    if(item.system?.type?.system.codename === "post"){
+    if (item._system?.type?._system.codename === "post") {
       return {
         slug: parrentSlug.concat([item.slug]),
         navigationType: "post",
-        navigationCodename: item.system?.codename,
-        contentCodename: item.system?.codename,
-        contentType: item.system?.type.system.codename
+        navigationCodename: item._system?.codename,
+        contentCodename: item._system?.codename,
+        contentType: item._system?.type._system.codename
       }
     }
 
     return {
       slug: parrentSlug.concat([item.slug]),
       navigationType: "navigationItem",
-      navigationCodename: item.system?.codename,
-      contentCodename: item.content.items[0].system.codename,
-      contentType: item.content.items[0].system.type.system.codename
+      navigationCodename: item._system?.codename,
+      contentCodename: item.content.items[0]._system.codename,
+      contentType: item.content.items[0]._system.type._system.codename
     }
   };
 
@@ -136,8 +136,8 @@ export default function App() {
       slug: [],
       navigationCodename: homepageCodename,
       navigationType: "homepage",
-      contentCodename: data.homepage.content.items[0].system.codename,
-      contentType: data.homepage.content.items[0].system.type.system.codename
+      contentCodename: data.homepage.content.items[0]._system.codename,
+      contentType: data.homepage.content.items[0]._system.type._system.codename
     }];
 
     data.homepage.subpages.items.forEach(item => {
@@ -146,9 +146,9 @@ export default function App() {
       mappings.push(...item.subpages.items.map(subItem => getNavigationData(navigationData.slug, subItem)));
 
       const content = item.content.items[0];
-      if(content.system.type.system.codename === "listing_page"){
+      if (content._system.type._system.codename === "listing_page") {
         const listingData = data[`${content.contentType}Collection`];
-        if (!listingData){
+        if (!listingData) {
           console.error(`Unknown listing page content type: ${content.contentType}`);
         }
         else {
@@ -166,7 +166,7 @@ export default function App() {
       };
 
       return result;
-    },{});
+    }, {});
   };
 
   const getSiteConfiguration = (data) => {
@@ -175,8 +175,8 @@ export default function App() {
       title: get(data, "homepage.title", ""),
       mainMenuActions: get(data, "homepage.mainMenu.items[0].actions.items", []),
       favicon: get(data, "homepage.favicon[0].url", null),
-      font: get(data, "homepage.font[0].system.codename", null),
-      palette: get(data, "homepage.palette[0].system.codename", null)
+      font: get(data, "homepage.font[0]._system.codename", null),
+      palette: get(data, "homepage.palette[0]._system.codename", null)
     };
   };
 
@@ -188,7 +188,7 @@ export default function App() {
 
       setMappings(mappings);
       setSiteConfiguration(siteConfiguration);
-      setHomepageSeo(getSeo(data.homepage));
+      setHomepageSeo(getSeo(data.homepage.seo));
     }
   });
 
@@ -196,29 +196,29 @@ export default function App() {
   const [siteConfiguration, setSiteConfiguration] = useState(null);
   const [homepageSeo, setHomepageSeo] = useState(null);
 
-  if(error || loading || !mappings || !siteConfiguration || !homepageSeo) {
-    return <GraphQLLoader error={error} loading={loading}/>;
+  if (error || loading || !mappings || !siteConfiguration || !homepageSeo) {
+    return <GraphQLLoader error={error} loading={loading} />;
   }
 
   return (
     <Router>
       <Switch>
-        <Route path="/" render={renderPage}/>
+        <Route path="/" render={renderPage} />
       </Switch>
     </Router>
   );
 
-  function renderPage({ location }){
+  function renderPage({ location }) {
     const navigationItem = mappings[getUrlSlug(location.pathname)];
 
-    if(!navigationItem) {
+    if (!navigationItem) {
       if (process.env.NODE_ENV === "development") {
         console.error(`Unknown navigation item pathname: ${location.pathname}`);
         return (
-            <div>
-              <h2>Not found</h2>
-              <pre>{JSON.stringify(mappings, undefined, 2)}</pre>
-            </div>
+          <div>
+            <h2>Not found</h2>
+            <pre>{JSON.stringify(mappings, undefined, 2)}</pre>
+          </div>
         );
       }
       return <h2>Not found</h2>;
@@ -229,27 +229,27 @@ export default function App() {
       mappings,
     };
 
-    if(navigationItem.navigationType === "homepage"){
+    if (navigationItem.navigationType === "homepage") {
       pageProps["seo"] = homepageSeo;
       pageProps["codename"] = navigationItem.contentCodename;
     }
 
     switch (navigationItem.contentType) {
       case "landing_page":
-        return <LandingPage {...pageProps} codename={pageProps["codename"] || navigationItem.navigationCodename} /> ;
+        return <LandingPage {...pageProps} codename={pageProps["codename"] || navigationItem.navigationCodename} />;
       case "listing_page":
-        return <ListingPage {...pageProps} codename={navigationItem.navigationCodename} {...getListingPaginationAndFilter(location)}/>;
+        return <ListingPage {...pageProps} codename={navigationItem.navigationCodename} {...getListingPaginationAndFilter(location)} />;
       case "simple_page":
         return <SimplePage {...pageProps} codename={pageProps["codename"] || navigationItem.navigationCodename} />;
       case "post":
-        return <Post {...pageProps} codename={navigationItem.contentCodename}/>;
+        return <Post {...pageProps} codename={navigationItem.contentCodename} />;
       default:
         if (process.env.NODE_ENV === "development") {
           console.error(`Unknown navigation item content type: ${navigationItem.contentType}`);
           return (
-              <UnknownComponent>
-                <pre>{JSON.stringify(mappings, undefined, 2)}</pre>
-              </UnknownComponent>
+            <UnknownComponent>
+              <pre>{JSON.stringify(mappings, undefined, 2)}</pre>
+            </UnknownComponent>
           );
         }
         return null;
