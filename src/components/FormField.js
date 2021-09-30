@@ -18,6 +18,8 @@ const useStyles = makeStyles((theme) => ({
 
 function FormField(props) {
   const classes = useStyles();
+  const [selectBoxValue, setSelectBoxValue] = React.useState('');
+
   let field = get(props, "field", null);
 
   let fieldComponent;
@@ -54,6 +56,10 @@ function FormField(props) {
     }
   }
   else if (field._system.type._system.codename === "select_form_field") {
+    const handleChange = (event) => {
+      setSelectBoxValue(event.target.value);
+    };
+
     fieldComponent = (
       <FormControl
         className={classes.formControl}>
@@ -61,7 +67,8 @@ function FormField(props) {
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value=''
+          onChange={handleChange}
+          value={selectBoxValue}
         >
           {get(field, "options.items", []).map(option => (
             <MenuItem key={get(option, "value")} value={get(option, "value")}>{get(option, "label")}</MenuItem>
