@@ -32,7 +32,7 @@ export const setAuthor = (location, author) => setParameter(location, authorQuer
 
 export const getAuthor = (location) => getParameter(location, authorQueryStringKey);
 
-export const setPersona = (location, language) => setParameter(location, personaQueryStringKey, language);
+export const setPersona = (location, persona) => setParameter(location, personaQueryStringKey, persona);
 
 export const getPersona = (location) => getParameter(location, personaQueryStringKey);
 
