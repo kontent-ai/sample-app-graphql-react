@@ -3,12 +3,12 @@ import upperFirst from "lodash.upperfirst";
 import camelCase from "lodash.camelcase";
 import { Layout, UnknownComponent, Link, Filter, GraphQLLoader } from "./components";
 import { Container, Grid, makeStyles, Paper } from "@material-ui/core";
-import thumbnailLayouts from "./components/thumbnails";
+import * as thumbnailLayouts from "./components/thumbnails";
 import React, { useState } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { assetFields, seoFields } from './graphQLFragments';
 import getSeo from './utils/getSeo';
-import { getAuthor, getPersona, setAuthor, setPersona } from './utils/queryString';
+import { getAuthor, setAuthor } from './utils/queryString';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -89,7 +89,7 @@ function ListingPage(props) {
 
     const [relatedItems, setRelatedItems] = useState([]);
     const [authors, setAuthors] = useState([]);
-    const [personas, setPersonas] = useState([]);
+    // const [personas, setPersonas] = useState([]);
     const [seo, setSeo] = useState(null);
 
     const { loading, error, data } = useQuery(listingPageQuery, {
@@ -111,10 +111,10 @@ function ListingPage(props) {
             }));
 
             // TODO update hardcoded personas and load them from Kontent
-            setPersonas([{
-                name: "Developer",
-                codename: "developer"
-            }]);
+            // setPersonas([{
+            //     name: "Developer",
+            //     codename: "developer"
+            // }]);
 
             setSeo(getSeo(data.navigationItem.seo));
         }

@@ -27,19 +27,3 @@ export {
   Icon,
   GraphQLLoader
 };
-
-export default {
-  CtaButtons,
-  FormField,
-  UnknownComponent,
-  Layout,
-  Header,
-  Link,
-  Filter,
-  Action,
-  Image,
-  RichText,
-  SideDrawer,
-  Icon,
-  GraphQLLoader
-};

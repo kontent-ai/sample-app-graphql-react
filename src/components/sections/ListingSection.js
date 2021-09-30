@@ -3,7 +3,7 @@ import get from "lodash.get";
 import upperFirst from "lodash.upperfirst";
 import camelCase from "lodash.camelcase";
 import { Card, CardContent, Container, Grid, makeStyles, Typography } from "@material-ui/core";
-import thumbnails from "../thumbnails";
+import * as thumbnails from "../thumbnails";
 import { RichText, UnknownComponent, GraphQLLoader } from "..";
 import { gql, useQuery } from '@apollo/client';
 import { assetFields } from '../../graphQLFragments';
