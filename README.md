@@ -525,6 +525,8 @@ query PostsQuery($limit: Int, $offset: Int) {
 
 You can extend the posts query setting `where` parameter in query.
 
+// TODO add persona once https://kentico.atlassian.net/browse/DEL-3086 is done
+
 #### Filter blogs by author
 
 ```graphql
