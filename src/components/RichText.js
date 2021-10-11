@@ -50,6 +50,7 @@ function RichText(props) {
       className={classes.richText}
       richTextElement={richTextElement}
       mappings={mappings}
+      // TODO adjust naming and detection linked item vs. component - internal link https://kentico.atlassian.net/browse/DEL-3081
       resolveLinkedItem={(linkedItem, domNode, domToReact) => {
         switch (linkedItem?._system.type._system.codename) {
           case "quote":
