@@ -1,61 +1,59 @@
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-} from "react-router-dom";
-import React, { useState } from 'react';
-import { gql, useQuery } from '@apollo/client';
-import get from 'lodash.get';
-import Post from './Post';
-import { getUrlSlug } from './utils';
-import LandingPage from './LandingPage';
-import ListingPage from './ListingPage';
-import SimplePage from './SimplePage';
-import { UnknownComponent } from './components';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import React, { useState } from "react";
+import { gql, useQuery } from "@apollo/client";
+import get from "lodash.get";
+import Post from "./Post";
+import { getUrlSlug } from "./utils";
+import LandingPage from "./LandingPage";
+import ListingPage from "./ListingPage";
+import SimplePage from "./SimplePage";
+import { UnknownComponent } from "./components";
 import {
   actionFields,
   assetFields,
   seoFields,
-  subpageNavigationItemFields
-} from './graphQLFragments';
-import GraphQLLoader from './components/GraphQLLoader';
-import getSeo from './utils/getSeo';
-import { getListingPaginationAndFilter } from './utils/queryString';
+  subpageNavigationItemFields,
+} from "./graphQLFragments";
+import GraphQLLoader from "./components/GraphQLLoader";
+import getSeo from "./utils/getSeo";
+import { getListingPaginationAndFilter } from "./utils/queryString";
 
 export default function App() {
   const homePageQuery = gql`
-    query HomePageQuery($codename: String!){
-      postCollection{
+    query HomePageQuery($codename: String!) {
+      post_All {
         items {
-          slug,
-          _system {
-            codename,
+          slug
+          _system_ {
+            codename
             type {
-              _system {
+              _system_ {
                 codename
               }
             }
           }
         }
       }
-      
       homepage(codename: $codename) {
         content {
-          items {
-            _system {
+          __typename
+          ... on LandingPage {
+            _system_ {
               codename
               type {
-                _system {
+                _system_ {
                   codename
                 }
               }
             }
           }
         }
-        seo {
-        ...SeoFields
+        _seo {
+          __typename
+          ...SeoFields
         }
         headerLogo {
+          __typename
           ...AssetFields
         }
         title
@@ -63,26 +61,30 @@ export default function App() {
           url
         }
         font {
-          _system {
-            codename
+          items {
+            _system_ {
+              codename
+            }
           }
         }
         palette {
-          _system {
-            codename
+          items {
+            _system_ {
+              codename
+            }
           }
         }
-        mainMenu(limit: 1) {
-          items {
-            ... on Menu {
-              _system {
-                codename
-              }
-              actions {
-                items {
-                  ... on Action {
-                    ...ActionFields
-                  }
+        mainMenu {
+          __typename
+          ... on Menu {
+            _system_ {
+              codename
+            }
+            actions {
+              items {
+                __typename
+                ... on Action {
+                  ...ActionFields
                 }
               }
             }
@@ -110,49 +112,59 @@ export default function App() {
   `;
 
   const getNavigationData = (parrentSlug, item) => {
-    if (item._system?.type?._system.codename === "post") {
+    if (item._system_?.type?._system_.codename === "post") {
       return {
         slug: parrentSlug.concat([item.slug]),
         navigationType: "post",
-        navigationCodename: item._system?.codename,
-        contentCodename: item._system?.codename,
-        contentType: item._system?.type._system.codename
-      }
+        navigationCodename: item._system_?.codename,
+        contentCodename: item._system_?.codename,
+        contentType: item._system_?.type._system_.codename,
+      };
     }
-
     return {
       slug: parrentSlug.concat([item.slug]),
       navigationType: "navigationItem",
-      navigationCodename: item._system?.codename,
-      contentCodename: item.content.items[0]._system.codename,
-      contentType: item.content.items[0]._system.type._system.codename
-    }
+      navigationCodename: item._system_?.codename,
+      contentCodename: item.content._system_.codename,
+      contentType: item.content._system_.type._system_.codename,
+    };
   };
 
   const homepageCodename = "homepage";
 
   const getMappings = (data) => {
-    const mappings = [{
-      slug: [],
-      navigationCodename: homepageCodename,
-      navigationType: "homepage",
-      contentCodename: data.homepage.content.items[0]._system.codename,
-      contentType: data.homepage.content.items[0]._system.type._system.codename
-    }];
+    const mappings = [
+      {
+        slug: [],
+        navigationCodename: homepageCodename,
+        navigationType: "homepage",
+        contentCodename: data.homepage.content._system_.codename,
+        contentType: data.homepage.content._system_.type._system_.codename,
+      },
+    ];
 
-    data.homepage.subpages.items.forEach(item => {
+    data.homepage.subpages.items.forEach((item) => {
       const navigationData = getNavigationData([], item);
       mappings.push(navigationData);
-      mappings.push(...item.subpages.items.map(subItem => getNavigationData(navigationData.slug, subItem)));
+      mappings.push(
+        ...item.subpages.items.map((subItem) =>
+          getNavigationData(navigationData.slug, subItem)
+        )
+      );
 
-      const content = item.content.items[0];
-      if (content._system.type._system.codename === "listing_page") {
-        const listingData = data[`${content.contentType}Collection`];
+      const content = item.content;
+      if (content._system_.type._system_.codename === "listing_page") {
+        const listingData = data[`${content.contentType}_All`];
         if (!listingData) {
-          console.error(`Unknown listing page content type: ${content.contentType}`);
-        }
-        else {
-          mappings.push(...listingData.items.map(subItem => getNavigationData(navigationData.slug, subItem)));
+          console.error(
+            `Unknown listing page content type: ${content.contentType}`
+          );
+        } else {
+          mappings.push(
+            ...listingData.items.map((subItem) =>
+              getNavigationData(navigationData.slug, subItem)
+            )
+          );
         }
       }
     });
@@ -162,7 +174,7 @@ export default function App() {
         navigationCodename: item.navigationCodename,
         navigationType: item.navigationType,
         contentCodename: item.contentCodename,
-        contentType: item.contentType
+        contentType: item.contentType,
       };
 
       return result;
@@ -171,12 +183,16 @@ export default function App() {
 
   const getSiteConfiguration = (data) => {
     return {
-      asset: get(data, "homepage.headerLogo[0]", null),
+      asset: get(data, "homepage.headerLogo", null),
       title: get(data, "homepage.title", ""),
-      mainMenuActions: get(data, "homepage.mainMenu.items[0].actions.items", []),
-      favicon: get(data, "homepage.favicon[0].url", null),
-      font: get(data, "homepage.font[0]._system.codename", null),
-      palette: get(data, "homepage.palette[0]._system.codename", null)
+      mainMenuActions: get(
+        data,
+        "homepage.mainMenu.actions.items",
+        []
+      ),
+      favicon: get(data, "homepage.favicon.url", null),
+      font: get(data, "homepage.font.items[0]._system_.codename", null),
+      palette: get(data, "homepage.palette.items[0]._system_.codename", null),
     };
   };
 
@@ -188,8 +204,8 @@ export default function App() {
 
       setMappings(mappings);
       setSiteConfiguration(siteConfiguration);
-      setHomepageSeo(getSeo(data.homepage.seo));
-    }
+      setHomepageSeo(getSeo(data.homepage._seo));
+    },
   });
 
   const [mappings, setMappings] = useState(null);
@@ -236,16 +252,40 @@ export default function App() {
 
     switch (navigationItem.contentType) {
       case "landing_page":
-        return <LandingPage {...pageProps} codename={pageProps["codename"] || navigationItem.navigationCodename} />;
+        return (
+          <LandingPage
+            {...pageProps}
+            codename={
+              pageProps["codename"] || navigationItem.navigationCodename
+            }
+          />
+        );
       case "listing_page":
-        return <ListingPage {...pageProps} codename={navigationItem.navigationCodename} {...getListingPaginationAndFilter(location)} />;
+        return (
+          <ListingPage
+            {...pageProps}
+            codename={navigationItem.navigationCodename}
+            {...getListingPaginationAndFilter(location)}
+          />
+        );
       case "simple_page":
-        return <SimplePage {...pageProps} codename={pageProps["codename"] || navigationItem.navigationCodename} />;
+        return (
+          <SimplePage
+            {...pageProps}
+            codename={
+              pageProps["codename"] || navigationItem.navigationCodename
+            }
+          />
+        );
       case "post":
-        return <Post {...pageProps} codename={navigationItem.contentCodename} />;
+        return (
+          <Post {...pageProps} codename={navigationItem.contentCodename} />
+        );
       default:
         if (process.env.NODE_ENV === "development") {
-          console.error(`Unknown navigation item content type: ${navigationItem.contentType}`);
+          console.error(
+            `Unknown navigation item content type: ${navigationItem.contentType}`
+          );
           return (
             <UnknownComponent>
               <pre>{JSON.stringify(mappings, undefined, 2)}</pre>
@@ -256,5 +296,3 @@ export default function App() {
     }
   }
 }
-
-

@@ -3,7 +3,6 @@ import FeaturesSection from "./FeaturesSection";
 import CtaSection from "./CtaSection";
 import ListingSection from "./ListingSection";
 import ContentSection from "./ContentSection";
-import FaqSection from "./FaqSection";
 import ContactSection from "./ContactSection";
 
 export {
@@ -12,6 +11,5 @@ export {
   CtaSection,
   ListingSection,
   ContentSection,
-  FaqSection,
   ContactSection,
 };

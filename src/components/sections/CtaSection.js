@@ -15,9 +15,8 @@ function CtaSection(props) {
   const section = get(props, "section", null);
   const classes = useStyles();
 
-
   return (
-    <section id={get(section, "_system.codename", null)} className={classes.section}>
+    <section id={get(section, "_system_.codename", null)} className={classes.section}>
       <Container>
 
         <Grid container spacing={2} alignItems="center">
@@ -37,7 +36,7 @@ function CtaSection(props) {
             </div>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Action {...props} action={get(section, "action.items[0]")} />
+            <Action {...props} action={get(section, "action")} />
           </Grid>
         </Grid>
 

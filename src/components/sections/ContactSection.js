@@ -12,11 +12,11 @@ const useStyles = makeStyles((theme) => ({
 
 function ContactSection(props) {
   const section = get(props, "section", null);
-  const form = get(props, "section.form.items[0]", null);
+  const form = get(props, "section.form", null);
   const classes = useStyles();
 
   return (
-    <section id={get(section, "_system.codename", null)} className={classes.section}>
+    <section id={get(section, "_system_.codename", null)} className={classes.section}>
       <Container>
         <div className={classes.intro}>
           {get(section, "title", null) && (

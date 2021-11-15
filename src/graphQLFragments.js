@@ -1,165 +1,233 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const subpageNavigationItemFields = gql`
-    fragment SubpageNavigationItemFields on NavigationItem {
-       _system {
-            codename
-        }
-        slug
-        content {
-            items {
-               _system {
-                    codename
-                    type {
-                       _system {
-                            codename
-                        }
-                    }
-                }
-
-                ... on ListingPage {
-                    contentType
-                }
-            }
-        }
+  fragment SubpageNavigationItemFields on NavigationItem {
+    __typename
+    _system_ {
+      codename
     }
+    slug
+    content {
+      # https://github.com/apollographql/apollo-client/issues/7648#issuecomment-968969367
+      __typename
+      ... on SimplePage {
+        _system_ {
+          codename
+          type {
+            _system_ {
+              codename
+            }
+          }
+        }
+      }
+      ... on LandingPage {
+        _system_ {
+          codename
+          type {
+            _system_ {
+              codename
+            }
+          }
+        }
+      }
+      ... on ListingPage {
+        _system_ {
+          codename
+          type {
+            _system_ {
+              codename
+            }
+          }
+        }
+        contentType
+      }
+    }
+  }
 `;
 
 export const richTextFields = gql`
-    fragment RichTextFields on RichText {
-        links {
-            items {
-               _system {
-                    id
-                    codename
-                    type {
-                       _system {
-                            codename
-                        }
-                    }
-                }
+  fragment RichTextFields on _RichText {
+    itemHyperlinks {
+      items {
+        __typename
+        _system_ {
+          id
+          codename
+          type {
+            _system_ {
+              codename
             }
+          }
         }
-        html
-        assets {
-            items {
-                ...AssetFields
-            }
-        }
-        components {
-            items {
-               _system {
-                    id
-                    codename
-                    type {
-                       _system {
-                            codename
-                        }
-                    }
-                }
-                ... on Quote {
-                    quoteText
-                }
-                ... on CodeBlock {
-                    code {
-                        html
-                    }
-                }
-            }
-        }
+      }
     }
+    html
+    assets {
+      items {
+        __typename
+        ...RichTextAssetFields
+      }
+    }
+    components {
+      items {
+        __typename
+        _system_ {
+          id
+          codename
+          type {
+            _system_ {
+              codename
+            }
+          }
+        }
+        ... on Quote {
+          quoteText
+        }
+        ... on CodeBlock {
+          code {
+            html
+          }
+        }
+      }
+    }
+  }
 `;
 
 export const seoFields = gql`
-    fragment SeoFields on Seo {
-        canonicalUrl
-        description
-        keywords
-        options {
-            _system {
-                codename
-            }
+  fragment SeoFields on Seo {
+    canonicalUrl
+    description
+    keywords
+    options {
+      items {
+        _system_ {
+          codename
         }
-        title
+      }
     }
+    title
+  }
 `;
 
 export const actionFields = gql`
-    fragment ActionFields on Action {
-       _system {
-            codename
+  fragment ActionFields on Action {
+    _system_ {
+      codename
+    }
+    label
+    navigationItem {
+      # https://github.com/apollographql/apollo-client/issues/7648#issuecomment-968969367
+      __typename
+      ... on ExternalUrl {
+        _system_ {
+          type {
+            _system_ {
+              codename
+            }
+          }
+        }
+        url
+      }
+      ... on NavigationItem {
+        _system_ {
+          type {
+            _system_ {
+              codename
+            }
+          }
+        }
+        _seo {
+          ...SeoFields
         }
         label
-        navigationItem {
-            items {
-               _system {
-                    type {
-                       _system {
-                            codename
-                        }
-                    }
+        slug
+        content {
+          # https://github.com/apollographql/apollo-client/issues/7648#issuecomment-968969367
+          __typename
+          ... on SimplePage {
+            _system_ {
+              codename
+              type {
+                _system_ {
+                  codename
                 }
-                ... on ExternalUrl {
-                    url
-                }
-                ... on NavigationItem {
-                    seo {
-                        ...SeoFields
-                    }
-                    label
-                    slug
-                    content {
-                        items {
-                           _system {
-                                codename
-                                type {
-                                   _system {
-                                        codename
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+              }
             }
+          }
+          ... on LandingPage {
+            _system_ {
+              codename
+              type {
+                _system_ {
+                  codename
+                }
+              }
+            }
+          }
+          ... on ListingPage {
+            _system_ {
+              codename
+              type {
+                _system_ {
+                  codename
+                }
+              }
+            }
+          }
         }
-        options {
-           _system {
-                codename
-            }
+      }
+    }
+    options {
+      items {
+        _system_ {
+          codename
         }
-        role {
-           _system {
-                codename
+      }
+    }
+    role {
+      items {
+        _system_ {
+          codename
+        }
+      }
+    }
+    icon {
+      ... on Icon {
+        iconPosition {
+          items {
+            _system_ {
+              codename
             }
+          }
+        }
+        _system_ {
+          codename
         }
         icon {
-            items {
-                ... on Icon {
-                    iconPosition {
-                       _system {
-                            codename
-                        }
-                    }
-                   _system {
-                        codename
-                    }
-                    icon {
-                       _system {
-                            codename
-                        }
-                    }
-                }
+          items {
+            _system_ {
+              codename
             }
+          }
         }
+      }
     }
+  }
 `;
 
 export const assetFields = gql`
-    fragment AssetFields on Asset {
-        url
-        name
-        description
-        imageId
-    }
+  fragment AssetFields on _Asset {
+    url
+    name
+    description
+  }
+`;
+
+export const richTextAssetFields = gql`
+  fragment RichTextAssetFields on _RichTextAsset {
+    url
+    name
+    description
+    imageId
+  }
 `;

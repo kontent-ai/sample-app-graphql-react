@@ -29,9 +29,8 @@ function FeaturesSection(props) {
 
   const theme = useTheme();
   const imageSizes = `(min-width: ${theme.breakpoints.values.sm}px) 40vw, 100vw`;
-
   return (
-    <section id={get(section, "_system.codename", null)} className={classes.section}>
+    <section id={get(section, "_system_.codename", null)} className={classes.section}>
       <Container>
         <div className={classes.intro}>
           {get(section, "title", null) && (
@@ -50,12 +49,12 @@ function FeaturesSection(props) {
         {get(section, "features.items[0]", null) && (
           get(section, "features.items", []).map((feature, index) => (
             <Grid container spacing={2} alignItems="center" key={index} direction={index % 2 ? "row-reverse" : "row"} className={classes.row}>
-              {get(feature, "image[0]", null) && (
+              {get(feature, "image", null) && (
                 <Grid item xs={12} sm={6} className={`${classes.column}, ${classes.image}`}>
                   <Image
                     sizes={imageSizes}
-                    asset={(get(feature, "image[0]", null))}
-                    alt={get(feature, "image[0].description") || get(feature, "image[0].name")} />
+                    asset={(get(feature, "image", null))}
+                    alt={get(feature, "image.description") || get(feature, "image.name")} />
                 </Grid>
               )}
 

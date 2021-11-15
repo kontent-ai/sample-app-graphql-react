@@ -18,7 +18,7 @@ function isLink(domNode) {
 
 // TODO adjust naming and detection linked item vs. component - internal link https://kentico.atlassian.net/browse/DEL-3081
 function replaceNode(domNode, richTextElement, linkedItems, mappings, resolveLinkedItem, resolveImage, resolveLink, resolveDomNode) {
-  const { assets, links } = richTextElement;
+  const { assets, itemHyperlinks } = richTextElement;
 
   if (resolveLinkedItem && linkedItems) {
     if (isLinkedItem(domNode)) {
@@ -36,10 +36,10 @@ function replaceNode(domNode, richTextElement, linkedItems, mappings, resolveLin
     }
   }
 
-  if (resolveLink && links?.items) {
+  if (resolveLink && itemHyperlinks?.items) {
     if (isLink(domNode)) {
       const linkId = domNode.attribs?.[LINKED_ITEM_ID_ATTRIBUTE_IDENTIFIER];
-      const link = links.items.find(link => link._system.id === linkId);
+      const link = itemHyperlinks.items.find(link => link._system_.id === linkId);
       return resolveLink(link, mappings, domNode, domToReact);
     }
   }
@@ -54,7 +54,7 @@ function RichTextComponent({ richTextElement, mappings, resolveLinkedItem, resol
   const cleanedValue = richTextElement.html.replace(/(\n|\r)+/, "");
   // currenlty resolving only components
   const linkedItems = richTextElement.components?.items.reduce((result, item) => {
-    result[item._system.codename] = item;
+    result[item._system_.codename] = item;
 
     return result;
   },{}) || {};

@@ -19,9 +19,9 @@ function Post(props) {
                 seo {
                     ...SeoFields
                 }
-                _system {
+                _system_ {
                     type {
-                        _system {
+                        _system_ {
                             codename
                         }
                     }

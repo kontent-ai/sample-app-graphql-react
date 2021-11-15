@@ -52,7 +52,7 @@ function RichText(props) {
       mappings={mappings}
       // TODO adjust naming and detection linked item vs. component - internal link https://kentico.atlassian.net/browse/DEL-3081
       resolveLinkedItem={(linkedItem, domNode, domToReact) => {
-        switch (linkedItem?._system.type._system.codename) {
+        switch (linkedItem?._system_.type._system_.codename) {
           case "quote":
             return (
               <blockquote className={classes.quote}>
@@ -84,7 +84,7 @@ function RichText(props) {
         );
       }}
       resolveLink={(link, mappings, domNode, domToReact) => {
-        const url = getUrlFromMapping(mappings, link._system.codename);
+        const url = getUrlFromMapping(mappings, link._system_.codename);
         if (url) {
           return (
             <Link href={url}>

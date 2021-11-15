@@ -32,16 +32,16 @@ function HeroSection(props) {
   const imageSizes = `(min-width: ${theme.breakpoints.values.sm}px) 40vw, 100vw`;
 
   return (
-    <section id={get(section, "_system.codename", null)} className={classes.section}>
+    <section id={get(section, "_system_.codename", null)} className={classes.section}>
       <Container>
         <Grid container spacing={2} alignItems="stretch" direction="row-reverse">
 
-          {get(section, "image[0]", null) && (
+          {get(section, "image", null) && (
             <Grid item xs={12} sm={6} className={classes.column}>
               <Image
                 sizes={imageSizes}
-                asset={get(section, "image[0]", null)}
-                alt={get(section, "image[0].description") || get(section, "image[0].name")}
+                asset={get(section, "image", null)}
+                alt={get(section, "image.description") || get(section, "image.name")}
                 loading="eager" />
             </Grid>
           )}
