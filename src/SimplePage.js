@@ -7,7 +7,6 @@ import {
   assetFields,
   seoFields,
   richTextFields,
-  richTextAssetFields,
 } from "./graphQLFragments";
 import getSeo from "./utils/getSeo";
 
@@ -21,11 +20,9 @@ function SimplePage(props) {
   const simplePageFields = gql`
     fragment SimplePageFields on SimplePage {
       content {
-        __typename
         ...RichTextFields
       }
       image {
-        __typename
         ...AssetFields
       }
       subtitle
@@ -36,14 +33,12 @@ function SimplePage(props) {
   const simplePageQuery = gql`
     query SimplePageQuery($codename: String!) {
       simplePage(codename: $codename) {
-        __typename
         ...SimplePageFields
       }
     }
 
     ${simplePageFields}
     ${assetFields}
-    ${richTextAssetFields}
     ${richTextFields}
   `;
 
@@ -54,7 +49,6 @@ function SimplePage(props) {
           ...SeoFields
         }
         content {
-          __typename
           ... on SimplePage {
             ...SimplePageFields
           }
@@ -64,7 +58,6 @@ function SimplePage(props) {
 
     ${simplePageFields}
     ${assetFields}
-    ${richTextAssetFields}
     ${richTextFields}
     ${seoFields}
   `;

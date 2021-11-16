@@ -444,7 +444,6 @@ The implementation of the listing page is stored in `src/ListingPage.js`.
         codename
       }
       image {
-        __typename
         ...AssetFields
       }
       title
@@ -452,7 +451,6 @@ The implementation of the listing page is stored in `src/ListingPage.js`.
       excerpt
       publishingDate
       author {
-        __typename
         ... on Author {
           firstName
           lastName

@@ -61,7 +61,6 @@ function ListingPage(props) {
                         codename
                     }
                     image {
-                        __typename
                         ...AssetFields
                     }
                     title
@@ -69,7 +68,6 @@ function ListingPage(props) {
                     excerpt
                     publishingDate
                     author {
-                        __typename
                         ... on Author {
                             firstName
                             lastName
@@ -79,15 +77,12 @@ function ListingPage(props) {
             }
             navigationItem(codename: $codename) {
                 _seo {
-                    ...SeoFields
+                  ...SeoFields
                 }
                 content {
-                    items {
-                        __typename
-                        ... on ListingPage {
-                            contentType
-                        }
-                    }
+                  ... on ListingPage {
+                      contentType
+                  }
                 }
             }
         }

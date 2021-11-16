@@ -6,13 +6,7 @@ import * as sections from "./components/sections";
 import { Box, makeStyles } from "@material-ui/core";
 import React, { useState } from "react";
 import { gql, useQuery } from "@apollo/client";
-import {
-  actionFields,
-  assetFields,
-  seoFields,
-  richTextFields,
-  richTextAssetFields,
-} from "./graphQLFragments";
+import { richTextFields, seoFields } from "./graphQLFragments";
 import getSeo from "./utils/getSeo";
 
 const useStyles = makeStyles((theme) => ({
@@ -27,63 +21,35 @@ const useStyles = makeStyles((theme) => ({
 function LandingPage(props) {
   const landingPageFields = gql`
     fragment LandingPageFields on LandingPage {
-      __typename
       sections {
         items {
           # https://github.com/apollographql/apollo-client/issues/7648#issuecomment-968969367
-          __typename
           ... on CtaSection {
             _system_ {
               codename
+              language {
+                _system_ {
+                  codename
+                }
+              }
               type {
                 _system_ {
                   codename
                 }
               }
-            }
-            title
-            subtitle {
-              __typename
-              ...RichTextFields
-            }
-            action {
-              __typename
-              ...ActionFields
             }
           }
           ... on FeaturesSection {
             _system_ {
               codename
-              type {
+              language {
                 _system_ {
                   codename
                 }
               }
-            }
-            title
-            subtitle {
-              __typename
-              ...RichTextFields
-            }
-            features {
-              items {
-                __typename
-                ... on Feature {
-                  image {
-                    __typename
-                    ...AssetFields
-                  }
-                  title
-                  content {
-                    __typename
-                    ...RichTextFields
-                  }
-                  actions {
-                    items {
-                      __typename
-                      ...ActionFields
-                    }
-                  }
+              type {
+                _system_ {
+                  codename
                 }
               }
             }
@@ -91,76 +57,14 @@ function LandingPage(props) {
           ... on ContactSection {
             _system_ {
               codename
-              type {
+              language {
                 _system_ {
                   codename
                 }
               }
-            }
-            title
-            subtitle {
-              __typename
-              ...RichTextFields
-            }
-            content {
-              __typename
-              ...RichTextFields
-            }
-            form {
-              __typename
-              ... on Form {
-                formId
-                formAction
-                submitLabel
-                fields {
-                  items {
-                    __typename
-                    ... on BaseFormField {
-                      _system_ {
-                        type {
-                          _system_ {
-                            codename
-                          }
-                        }
-                      }
-                      type {
-                        items {
-                          _system_ {
-                            codename
-                          }
-                        }
-                      }
-                      name
-                      label
-                      defaultValue
-                      configuration {
-                        items {
-                          _system_ {
-                            codename
-                          }
-                        }
-                      }
-                    }
-                    ... on SelectFormField {
-                      _system_ {
-                        type {
-                          _system_ {
-                            codename
-                          }
-                        }
-                      }
-                      label
-                      options {
-                        items {
-                          __typename
-                          ... on SelectFormFieldOption {
-                            label
-                            value
-                          }
-                        }
-                      }
-                    }
-                  }
+              type {
+                _system_ {
+                  codename
                 }
               }
             }
@@ -168,56 +72,41 @@ function LandingPage(props) {
           ... on HeroSection {
             _system_ {
               codename
-              type {
+              language {
                 _system_ {
                   codename
                 }
               }
-            }
-            image {
-              __typename
-              ...AssetFields
-            }
-            title
-            content {
-              __typename
-              ...RichTextFields
-            }
-            actions {
-              items {
-                __typename
-                ...ActionFields
+              type {
+                _system_ {
+                  codename
+                }
               }
             }
           }
           ... on ContentSection {
             _system_ {
               codename
+              language {
+                _system_ {
+                  codename
+                }
+              }
               type {
                 _system_ {
                   codename
                 }
               }
             }
-            image {
-              __typename
-              ...AssetFields
-            }
-            title
-            content {
-              __typename
-              ...RichTextFields
-            }
-            actions {
-              items {
-                __typename
-                ...ActionFields
-              }
-            }
           }
           ... on ListingSection {
             _system_ {
               codename
+              language {
+                _system_ {
+                  codename
+                }
+              }
               type {
                 _system_ {
                   codename
@@ -226,7 +115,6 @@ function LandingPage(props) {
             }
             title
             subtitle {
-              __typename
               ...RichTextFields
             }
             orderBy
@@ -236,6 +124,8 @@ function LandingPage(props) {
         }
       }
     }
+
+    ${richTextFields}
   `;
 
   const landingPageQuery = gql`
@@ -245,11 +135,6 @@ function LandingPage(props) {
       }
     }
     ${landingPageFields}
-    ${richTextFields}
-    ${richTextAssetFields}
-    ${assetFields}
-    ${actionFields}
-    ${seoFields}
   `;
 
   const navigationAndLandingPageQuery = gql`
@@ -259,7 +144,6 @@ function LandingPage(props) {
           ...SeoFields
         }
         content {
-          __typename
           ... on LandingPage {
             ...LandingPageFields
           }
@@ -267,10 +151,6 @@ function LandingPage(props) {
       }
     }
     ${landingPageFields}
-    ${richTextFields}
-    ${richTextAssetFields}
-    ${assetFields}
-    ${actionFields}
     ${seoFields}
   `;
 
@@ -321,7 +201,12 @@ function LandingPage(props) {
           }
 
           return (
-            <Component key={index} {...props} section={section} site={props} />
+            <Component
+              key={index}
+              {...props}
+              section={section}
+              site={props}
+            />
           );
         })}
       </Box>

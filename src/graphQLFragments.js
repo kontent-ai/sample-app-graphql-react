@@ -1,15 +1,30 @@
 import { gql } from "@apollo/client";
 
+const richTextAssetFields = gql`
+  fragment RichTextAssetFields on _RichTextAsset {
+    url
+    name
+    description
+    imageId
+  }
+`;
+
+export const assetFields = gql`
+  fragment AssetFields on _Asset {
+    url
+    name
+    description
+  }
+`;
+
 export const subpageNavigationItemFields = gql`
   fragment SubpageNavigationItemFields on NavigationItem {
-    __typename
     _system_ {
       codename
     }
     slug
     content {
       # https://github.com/apollographql/apollo-client/issues/7648#issuecomment-968969367
-      __typename
       ... on SimplePage {
         _system_ {
           codename
@@ -49,7 +64,6 @@ export const richTextFields = gql`
   fragment RichTextFields on _RichText {
     itemHyperlinks {
       items {
-        __typename
         _system_ {
           id
           codename
@@ -64,13 +78,11 @@ export const richTextFields = gql`
     html
     assets {
       items {
-        __typename
         ...RichTextAssetFields
       }
     }
     components {
       items {
-        __typename
         _system_ {
           id
           codename
@@ -91,6 +103,8 @@ export const richTextFields = gql`
       }
     }
   }
+
+  ${richTextAssetFields}
 `;
 
 export const seoFields = gql`
@@ -117,7 +131,6 @@ export const actionFields = gql`
     label
     navigationItem {
       # https://github.com/apollographql/apollo-client/issues/7648#issuecomment-968969367
-      __typename
       ... on ExternalUrl {
         _system_ {
           type {
@@ -143,7 +156,6 @@ export const actionFields = gql`
         slug
         content {
           # https://github.com/apollographql/apollo-client/issues/7648#issuecomment-968969367
-          __typename
           ... on SimplePage {
             _system_ {
               codename
@@ -213,21 +225,6 @@ export const actionFields = gql`
       }
     }
   }
-`;
 
-export const assetFields = gql`
-  fragment AssetFields on _Asset {
-    url
-    name
-    description
-  }
-`;
-
-export const richTextAssetFields = gql`
-  fragment RichTextAssetFields on _RichTextAsset {
-    url
-    name
-    description
-    imageId
-  }
+  ${seoFields}
 `;

@@ -36,7 +36,6 @@ export default function App() {
       }
       homepage(codename: $codename) {
         content {
-          __typename
           ... on LandingPage {
             _system_ {
               codename
@@ -49,11 +48,9 @@ export default function App() {
           }
         }
         _seo {
-          __typename
           ...SeoFields
         }
         headerLogo {
-          __typename
           ...AssetFields
         }
         title
@@ -75,14 +72,12 @@ export default function App() {
           }
         }
         mainMenu {
-          __typename
           ... on Menu {
             _system_ {
               codename
             }
             actions {
               items {
-                __typename
                 ... on Action {
                   ...ActionFields
                 }

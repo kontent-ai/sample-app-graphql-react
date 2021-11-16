@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ListingSection(props) {
+  
   const listingSectionQuery = gql`
     query ListingSectionQuery($limit: Int) {
       post_All(limit: $limit) {
@@ -40,7 +41,6 @@ function ListingSection(props) {
             }
           }
           image {
-            __typename
             ...AssetFields
           }
           slug
@@ -48,7 +48,6 @@ function ListingSection(props) {
           excerpt
           publishingDate
           author {
-            __typename
             ... on Author {
               firstName
               lastName

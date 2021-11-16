@@ -11,8 +11,7 @@ const PROJECT_ID = process.env.REACT_APP_KONTENT_PROJECT_ID || "ad25961e-f934-01
 
 const client = new ApolloClient({
     cache: new InMemoryCache({
-        addTypename: false
-        // // https://github.com/apollographql/apollo-client/issues/7648#issuecomment-968969367
+        // https://github.com/apollographql/apollo-client/issues/7648#issuecomment-968969367
         // possibleTypes: {
         //     _Item: [
         //         "LandingPage",
