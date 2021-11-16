@@ -38,7 +38,7 @@ This optional section allows you to create your own copy of the project in Konte
    > Alternatively, you can use the [Kontent Backup Manager](https://github.com/Kentico/kontent-backup-manager-js) and import data to the newly created project from [`kontent-backup.zip`](./kontent-backup.zip) file via command line:
    >
    > ```sh
-   >  npm i -g @kentico/kontent-backup-manager
+   >  npm i -g @kentico/kontent-backup-manager@3.0.1
    >  # or
    >  yarn global add @kentico/kontent-backup-manager
    >
@@ -325,10 +325,6 @@ Following sections showcase what properties you could use to load this data. All
 }
 ```
 
-### Image transformation (hero image)
-
-// TODO - once image transformation is implemented
-
 ## Landing page
 
 Landing page itself showcases a resolution of different content types linked in single linked items element.
@@ -448,18 +444,18 @@ The implementation of the listing page is stored in `src/ListingPage.js`.
         codename
       }
       image {
+        __typename
         ...AssetFields
       }
       title
       slug
       excerpt
       publishingDate
-      author(limit: 1) {
-        items {
-          ... on Author {
-            firstName
-            lastName
-          }
+      author {
+        __typename
+        ... on Author {
+          firstName
+          lastName
         }
       }
     }
@@ -525,8 +521,6 @@ query PostsQuery($limit: Int, $offset: Int) {
 
 You can extend the posts query setting `where` parameter in query.
 
-// TODO add persona once https://kentico.atlassian.net/browse/DEL-3086 is done
-
 #### Filter blogs by author
 
 ```graphql
@@ -562,4 +556,3 @@ query PostsQuery($persona: String) {
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
-```
