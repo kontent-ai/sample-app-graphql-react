@@ -1,9 +1,11 @@
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Router, Switch, Route } from "react-router-dom";
 import React, { useState } from "react";
+import ReactGA from 'react-ga';
+import { createBrowserHistory } from 'history';
 import { gql, useQuery } from "@apollo/client";
 import get from "lodash.get";
 import Post from "./Post";
-import { getUrlSlug } from "./utils";
+import { getUrlFromMappingByPathName } from "./utils";
 import LandingPage from "./LandingPage";
 import ListingPage from "./ListingPage";
 import SimplePage from "./SimplePage";
@@ -18,7 +20,7 @@ import GraphQLLoader from "./components/GraphQLLoader";
 import getSeo from "./utils/getSeo";
 import { getListingPaginationAndFilter } from "./utils/queryString";
 
-export default function App() {
+export default function App(props) {
   const homePageQuery = gql`
     query HomePageQuery($codename: String!) {
       post_All {
@@ -165,7 +167,7 @@ export default function App() {
     });
 
     return mappings.reduce((result, item) => {
-      result[getUrlSlug(item.slug)] = {
+      result[[].concat(item.slug).join("/")] = {
         navigationCodename: item.navigationCodename,
         navigationType: item.navigationType,
         contentCodename: item.contentCodename,
@@ -211,8 +213,16 @@ export default function App() {
     return <GraphQLLoader error={error} loading={loading} />;
   }
 
+  const history = createBrowserHistory();
+  if (props.initializeAnalytics) {
+    history.listen(location => {
+      ReactGA.set({ page: location.pathname });
+      ReactGA.pageview(location.pathname);
+    });
+  }
+
   return (
-    <Router>
+    <Router history={history} basename={process.env.PUBLIC_URL}>
       <Switch>
         <Route path="/" render={renderPage} />
       </Switch>
@@ -220,7 +230,7 @@ export default function App() {
   );
 
   function renderPage({ location }) {
-    const navigationItem = mappings[getUrlSlug(location.pathname)];
+    const navigationItem = getUrlFromMappingByPathName(mappings, location.pathname);
 
     if (!navigationItem) {
       if (process.env.NODE_ENV === "development") {
