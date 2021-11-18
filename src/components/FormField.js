@@ -24,10 +24,10 @@ function FormField(props) {
 
   let fieldComponent;
 
-  if (field._system.type._system.codename === "base_form_field") {
+  if (field._system_.type._system_.codename === "base_form_field") {
 
-    const isTextArea = get(field, "type[0]._system.codename") === "textarea";
-    const isCheckbox = get(field, "type[0]._system.codename") === "checkbox";
+    const isTextArea = get(field, "type.items[0]._system_.codename") === "textarea";
+    const isCheckbox = get(field, "type.items[0]._system_.codename") === "checkbox";
     if (isCheckbox) {
       fieldComponent = (
         <FormGroup className={classes.checkbox}>
@@ -42,12 +42,12 @@ function FormField(props) {
     else {
       fieldComponent = (
         <TextField
-          type={get(field, "type[0]._system.codename")}
+          type={get(field, "type[0]._system_.codename")}
           multiline={isTextArea ? true : false}
           rows={isTextArea ? 4 : undefined}
           label={get(field, "label", null)}
           placeholder={get(field, "defaultValue", null)}
-          required={get(field, "configuration", []).some(config => config._system.codename === "required")}
+          required={get(field, "configuration.items", []).some(config => config._system_.codename === "required")}
           name={get(field, "name", null)}
           className={`${classes.formControl} ${isTextArea ? classes.textArea : null}`}
         />
@@ -55,7 +55,7 @@ function FormField(props) {
       );
     }
   }
-  else if (field._system.type._system.codename === "select_form_field") {
+  else if (field._system_.type._system_.codename === "select_form_field") {
     const handleChange = (event) => {
       setSelectBoxValue(event.target.value);
     };

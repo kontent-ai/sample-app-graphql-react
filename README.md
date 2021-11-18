@@ -38,7 +38,7 @@ This optional section allows you to create your own copy of the project in Konte
    > Alternatively, you can use the [Kontent Backup Manager](https://github.com/Kentico/kontent-backup-manager-js) and import data to the newly created project from [`kontent-backup.zip`](./kontent-backup.zip) file via command line:
    >
    > ```sh
-   >  npm i -g @kentico/kontent-backup-manager
+   >  npm i -g @kentico/kontent-backup-manager@3.0.1
    >  # or
    >  yarn global add @kentico/kontent-backup-manager
    >
@@ -120,12 +120,12 @@ This data loaded in the [App component](./src/App.js) as part of the query. Simp
       url
     }
     font {
-      _system {
+      _system_ {
         codename
       }
     }
     palette {
-      _system {
+      _system_ {
         codename
       }
     }
@@ -188,7 +188,7 @@ Simplified version of the data loading:
     mainMenu(limit: 1) {
       items {
         ... on Menu {
-          _system {
+          _system_ {
             codename
           }
           actions {
@@ -223,11 +223,11 @@ Following sections showcase what properties you could use to load this data. All
       html
       components {
         items {
-          _system {
+          _system_ {
             id
             codename
             type {
-              _system {
+              _system_ {
                 codename
               }
             }
@@ -257,11 +257,11 @@ Following sections showcase what properties you could use to load this data. All
       html
       modularContent {
         items {
-          _system {
+          _system_ {
             id
             codename
             type {
-              _system {
+              _system_ {
                 codename
               }
             }
@@ -325,10 +325,6 @@ Following sections showcase what properties you could use to load this data. All
 }
 ```
 
-### Image transformation (hero image)
-
-// TODO - once image transformation is implemented
-
 ## Landing page
 
 Landing page itself showcases a resolution of different content types linked in single linked items element.
@@ -346,10 +342,10 @@ In this use case it is a list of section and application is using `system.type` 
   landingPage(codename: "main_content") {
     sections {
       items {
-        _system {
+        _system_ {
           codename
           type {
-            _system {
+            _system_ {
               codename
             }
           }
@@ -436,12 +432,12 @@ The implementation of the listing page is stored in `src/ListingPage.js`.
 
 ```graphql
 {
-  postCollection {
+  post_All {
     # Strongly typed collections of items based on `Post`content type
     items {
-      _system {
+      _system_ {
         type {
-          _system {
+          _system_ {
             codename
           }
         }
@@ -454,12 +450,10 @@ The implementation of the listing page is stored in `src/ListingPage.js`.
       slug
       excerpt
       publishingDate
-      author(limit: 1) {
-        items {
-          ... on Author {
-            firstName
-            lastName
-          }
+      author {
+        ... on Author {
+          firstName
+          lastName
         }
       }
     }
@@ -475,9 +469,9 @@ query PostPageQuery($codename: String!) {
     seo {
       ...SeoFields # see ~/src/graphQLFragments.js
     }
-    _system {
+    _system_ {
       type {
-        _system {
+        _system_ {
           codename
         }
       }
@@ -511,7 +505,7 @@ In GraphQl, you just use a filter in the query:
 
 ```graphql
 query PostsQuery($limit: Int, $offset: Int) {
-  postCollection(limit: $limit, offset: $offset) {
+  post_All(limit: $limit, offset: $offset) {
     # Strongly typed collections of items based on `Post`content type
     items {
       # ...
@@ -525,13 +519,11 @@ query PostsQuery($limit: Int, $offset: Int) {
 
 You can extend the posts query setting `where` parameter in query.
 
-// TODO add persona once https://kentico.atlassian.net/browse/DEL-3086 is done
-
 #### Filter blogs by author
 
 ```graphql
 query PostsQuery($author: String) {
-  postCollection(where: {authorLinksCodename: $author}) {
+  post_All(where: {authorLinksCodename: $author}) {
     # Strongly typed collections of items based on `Post`content type
     items {
       # ...
@@ -544,7 +536,7 @@ query PostsQuery($author: String) {
 
 ```graphql
 query PostsQuery($persona: String) {
-  postCollection(where: {personaLinksTerm: $persona}) {
+  post_All(where: {personaLinksTerm: $persona}) {
     # Strongly typed collections of items based on `Post`content type
     items {
       # ...
@@ -562,4 +554,3 @@ query PostsQuery($persona: String) {
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
-```
