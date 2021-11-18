@@ -1,12 +1,12 @@
-import { ImageUrlBuilder, ImageCompressionEnum } from "@kentico/kontent-delivery";
+import { transformImageUrl } from '@kentico/kontent-delivery';
 
 
 const kontentImageLoader = ({ src, width, quality }) => {
   // https://docs.kontent.ai/reference/image-transformation
-  const builder = new ImageUrlBuilder(src)
+  const builder = transformImageUrl(src)
     .withWidth(width)
     .withQuality(quality || 75)
-    .withCompression(ImageCompressionEnum.Lossless)
+    .withCompression('lossless')
     .withAutomaticFormat();
 
   return builder.getUrl();
