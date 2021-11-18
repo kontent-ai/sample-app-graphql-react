@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.js": "/kontent-sample-app-graphql-react/static/js/main.b3659b68.chunk.js",
-    "main.js.map": "/kontent-sample-app-graphql-react/static/js/main.b3659b68.chunk.js.map",
+    "main.js": "/kontent-sample-app-graphql-react/static/js/main.d6f8b0c4.chunk.js",
+    "main.js.map": "/kontent-sample-app-graphql-react/static/js/main.d6f8b0c4.chunk.js.map",
     "runtime-main.js": "/kontent-sample-app-graphql-react/static/js/runtime-main.9d45bc47.js",
     "runtime-main.js.map": "/kontent-sample-app-graphql-react/static/js/runtime-main.9d45bc47.js.map",
-    "static/js/2.73e06296.chunk.js": "/kontent-sample-app-graphql-react/static/js/2.73e06296.chunk.js",
-    "static/js/2.73e06296.chunk.js.map": "/kontent-sample-app-graphql-react/static/js/2.73e06296.chunk.js.map",
+    "static/js/2.1de2a6a4.chunk.js": "/kontent-sample-app-graphql-react/static/js/2.1de2a6a4.chunk.js",
+    "static/js/2.1de2a6a4.chunk.js.map": "/kontent-sample-app-graphql-react/static/js/2.1de2a6a4.chunk.js.map",
     "index.html": "/kontent-sample-app-graphql-react/index.html",
-    "static/js/2.73e06296.chunk.js.LICENSE.txt": "/kontent-sample-app-graphql-react/static/js/2.73e06296.chunk.js.LICENSE.txt"
+    "static/js/2.1de2a6a4.chunk.js.LICENSE.txt": "/kontent-sample-app-graphql-react/static/js/2.1de2a6a4.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.9d45bc47.js",
-    "static/js/2.73e06296.chunk.js",
-    "static/js/main.b3659b68.chunk.js"
+    "static/js/2.1de2a6a4.chunk.js",
+    "static/js/main.d6f8b0c4.chunk.js"
   ]
 }
