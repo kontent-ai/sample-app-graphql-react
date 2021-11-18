@@ -25,6 +25,9 @@ jobs:
     - run: npm run build --if-present
       env:
         REACT_APP_GA_ANALYTICS_TOKEN: ${{ secrets.REACT_APP_GA_ANALYTICS_TOKEN }}
+    - name: Copy index.html fot 404.html for GitHub pages deployment redirects
+      if: github.ref == 'refs/heads/main'
+      run: cp ./build/index.html ./build/404.html
     - name: Deploy 🚀
       if: github.ref == 'refs/heads/main'
       uses: JamesIves/github-pages-deploy-action@3.6.2
