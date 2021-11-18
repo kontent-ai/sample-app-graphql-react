@@ -23,6 +23,8 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build --if-present
+      env:
+        REACT_APP_GA_ANALYTICS_TOKEN: ${{ secrets.REACT_APP_GA_ANALYTICS_TOKEN }}
     - name: Deploy 🚀
       if: github.ref == 'refs/heads/main'
       uses: JamesIves/github-pages-deploy-action@3.6.2
