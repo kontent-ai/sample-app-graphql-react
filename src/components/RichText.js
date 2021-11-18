@@ -1,7 +1,7 @@
 import { makeStyles, Typography, useTheme } from "@material-ui/core";
 import get from "lodash.get";
 import { Image, Link } from ".";
-import { getUrlFromMapping } from "../utils";
+import { getUrlFromMappingByCodename } from "../utils";
 import RichTextComponent from "./RichTextComponent";
 
 const useStyles = makeStyles((theme) => ({
@@ -84,7 +84,7 @@ function RichText(props) {
         );
       }}
       resolveLink={(link, mappings, domNode, domToReact) => {
-        const url = getUrlFromMapping(mappings, link._system_.codename);
+        const url = getUrlFromMappingByCodename(mappings, link._system_.codename);
         if (url) {
           return (
             <Link href={url}>

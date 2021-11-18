@@ -40,7 +40,7 @@ This optional section allows you to create your own copy of the project in Konte
    > ```sh
    >  npm i -g @kentico/kontent-backup-manager@3.0.1
    >  # or
-   >  yarn global add @kentico/kontent-backup-manager
+   >  yarn global add @kentico/kontent-backup-manager@3.0.1
    >
    >  kbm --action=restore --projectId=<Project ID> --apiKey=<Management API key> --zipFilename=kontent-backup
    > ```
@@ -67,10 +67,11 @@ This optional section allows you to create your own copy of the project in Konte
 
 > By default, the content is loaded from a shared Kentico Kontent project. If you want to use your own clone of the project so that you can customize it and experiment with Kontent, continue to the next section.
 
-|              Variable              | Required | Description              |
-| :--------------------------------: | :------: | :----------------------- |
-|    REACT_APP_KONTENT_PROJECT_ID    |    NO    | Project identification   |
-| REACT_APP_KONTENT_GRAPHQL_ENDPOINT |    NO    | Kontent GraphQL endpoint |
+|              Variable              | Required | Description                                                                              |
+| :--------------------------------: | :------: | :--------------------------------------------------------------------------------------- |
+|    REACT_APP_KONTENT_PROJECT_ID    |    NO    | Project identification                                                                   |
+| REACT_APP_KONTENT_GRAPHQL_ENDPOINT |    NO    | Kontent GraphQL endpoint                                                                 |
+|    REACT_APP_GA_ANALYTICS_TOKEN    |    NO    | If you want to inject [Google analytics](https://developers.google.com/analytics) script |
 
 ## Content editing development
 
@@ -546,6 +547,10 @@ query PostsQuery($persona: String) {
 ```
 
 ---
+
+## Tracking
+
+The package is including tracking header to the requests to Kontent, which helps to identify the adoption of the source plugin and helps to analyze what happened in case of error. If you think that tracking should be optional feel free to raise the feature or pull request.
 
 ## Learn More
 
