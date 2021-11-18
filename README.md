@@ -1,5 +1,12 @@
 # Kontent Sample app GraphQL React
 
+[![Node.js CI](https://github.com/Kentico/kontent-sample-app-graphql-react/actions/workflows/node.js.yml/badge.svg)](https://github.com/Kentico/kontent-sample-app-graphql-react/actions/workflows/node.js.yml)
+[![Live Demo](https://img.shields.io/badge/Live-DEMO-brightgreen.svg?logo=github&logoColor=white)](https://kentico.github.io/kontent-sample-app-graphql-react/)
+
+[![GitHub Discussions](https://img.shields.io/badge/GitHub-Discussions-FE7A16.svg?style=popout&logo=github)](https://github.com/Kentico/Home/discussions)
+[![Stack Overflow](https://img.shields.io/badge/Stack%20Overflow-ASK%20NOW-FE7A16.svg?logo=stackoverflow&logoColor=white)](https://stackoverflow.com/tags/kentico-kontent)
+[![Konten Discord](https://img.shields.io/discord/821885171984891914?color=%237289DA&label=Kontent%20Discord&logo=discord)](https://discord.gg/SKCxwPtevJ)
+
 This sample app showcase Kontent GraphQL API endpoint usage in combination with React.js using Apollo client.
 
 ## Getting started
