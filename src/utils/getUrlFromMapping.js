@@ -3,8 +3,6 @@ export function getUrlFromMappingByCodename(mappings, codename) {
 }
 
 export function getUrlFromMappingByPathName(mappings, pathname) {
-  debugger;
-  
   let unifiedPath = pathname;
 
   if (pathname.startsWith(process.env.PUBLIC_URL)) {
