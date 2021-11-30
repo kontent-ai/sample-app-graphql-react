@@ -6,5 +6,7 @@ export default function getUrlSlug(slugPartsArrayOrString) {
     return process.env.PUBLIC_URL || "/"
   }
 
-  return process.env.PUBLIC_URL + (slug.startsWith("/") ? slug : `/${slug}`)
+  const slugWithSlash = slug.startsWith("/") ? slug : `/${slug}`;
+
+  return slugWithSlash.startsWith(process.env.PUBLIC_URL) ? slugWithSlash : `${process.env.PUBLIC_URL}${slugWithSlash}`;
 }
