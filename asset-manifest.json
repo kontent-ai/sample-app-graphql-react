@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.js": "/kontent-sample-app-graphql-react/static/js/main.f609ba9f.chunk.js",
-    "main.js.map": "/kontent-sample-app-graphql-react/static/js/main.f609ba9f.chunk.js.map",
+    "main.js": "/kontent-sample-app-graphql-react/static/js/main.81cc2bbc.chunk.js",
+    "main.js.map": "/kontent-sample-app-graphql-react/static/js/main.81cc2bbc.chunk.js.map",
     "runtime-main.js": "/kontent-sample-app-graphql-react/static/js/runtime-main.9d45bc47.js",
     "runtime-main.js.map": "/kontent-sample-app-graphql-react/static/js/runtime-main.9d45bc47.js.map",
     "static/js/2.1de2a6a4.chunk.js": "/kontent-sample-app-graphql-react/static/js/2.1de2a6a4.chunk.js",
@@ -12,6 +12,6 @@
   "entrypoints": [
     "static/js/runtime-main.9d45bc47.js",
     "static/js/2.1de2a6a4.chunk.js",
-    "static/js/main.f609ba9f.chunk.js"
+    "static/js/main.81cc2bbc.chunk.js"
   ]
 }
