@@ -14,7 +14,7 @@ import React, { useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { assetFields, seoFields } from "./graphQLFragments";
 import getSeo from "./utils/getSeo";
-import { getAuthor, setAuthor } from "./utils/queryString";
+import { getAuthor, setAuthor, getPersona, setPersona } from "./utils/queryString";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,12 +32,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function getListingPageQuerySignatureSuffix(author, persona) {
+  let result = author ? ", $author: String!" : "";
+  result += persona ? ", $persona: String!" : "";
+  return result;
+}
+
+function getListingPageQueryCondition(author, persona) {
+
+  const personaQuery = "persona: {containsAny: [$persona]}";
+  const authorQuery = "author: {containsAny: [$author]}";
+
+  let result = author && persona ? `, where: { AND: [{${authorQuery}}, {${personaQuery}} ] }` : "";
+  result += !author && persona ? `, where: {${personaQuery}}` : "";
+  result += author && !persona ? `, where: {${authorQuery}}` : "";
+  return result;
+}
+
 function ListingPage(props) {
   const listingPageQuery = gql`
-        # TODO add persona once https://kentico.atlassian.net/browse/DEL-3086 is done
-        query ListingPageQuery($limit: Int, $offset: Int, $codename: String! ${
-          props.author ? ", $author: String!" : ""
-        }){
+        query ListingPageQuery($limit: Int, $offset: Int, $codename: String! ${getListingPageQuerySignatureSuffix(props.author, props.persona)}){
             author_All {
                 items {
                     firstName
@@ -47,10 +61,7 @@ function ListingPage(props) {
                     }
                 }
             }
-            # TODO add persona once https://kentico.atlassian.net/browse/DEL-3086 is done
-            post_All(limit: $limit, offset: $offset, ${
-              props.author ? "where: {author: {containsAny: [$author]} }" : ""
-            }) {
+            post_All(limit: $limit, offset: $offset ${getListingPageQueryCondition(props.author, props.persona)}) {
                 items {
                     _system_ {
                         type {
@@ -95,7 +106,7 @@ function ListingPage(props) {
 
   const [relatedItems, setRelatedItems] = useState([]);
   const [authors, setAuthors] = useState([]);
-  // const [personas, setPersonas] = useState([]);
+  const [personas, setPersonas] = useState([]);
   const [seo, setSeo] = useState(null);
 
   const { loading, error, data } = useQuery(
@@ -104,7 +115,8 @@ function ListingPage(props) {
       variables: {
         codename: props.codename,
         author: props.author,
-        /* persona: props.persona,*/ limit: props.limit,
+        persona: props.persona,
+        limit: props.limit,
         offset: props.offset,
       },
       onCompleted: (data) => {
@@ -126,10 +138,10 @@ function ListingPage(props) {
         );
 
         // TODO update hardcoded personas and load them from Kontent
-        // setPersonas([{
-        //     name: "Developer",
-        //     codename: "developer"
-        // }]);
+        setPersonas([{
+            name: "Developer",
+            codename: "developer"
+        }]);
 
         setSeo(getSeo(data.navigationItem._seo));
       },
@@ -164,7 +176,7 @@ function ListingPage(props) {
           updateLocation={setAuthor}
           getValueFromLocation={getAuthor}
         />
-        {/* <Filter label="Persona" parameterName="persona" options={personas} updateLocation={setPersona} getValueFromLocation={getPersona} /> */}
+        <Filter label="Persona" parameterName="persona" options={personas} updateLocation={setPersona} getValueFromLocation={getPersona} />
         {relatedItems.length > 0 && (
           <Grid container spacing={4} alignItems="stretch">
             {relatedItems.map((item, item_idx) => {
