@@ -531,7 +531,7 @@ You can extend the posts query setting `where` parameter in query.
 
 ```graphql
 query PostsQuery($author: String) {
-  post_All(where: {authorLinksCodename: $author}) {
+  post_All(where: {author: {containsAny: [$author]}}) {
     # Strongly typed collections of items based on `Post`content type
     items {
       # ...
@@ -544,7 +544,25 @@ query PostsQuery($author: String) {
 
 ```graphql
 query PostsQuery($persona: String) {
-  post_All(where: {personaLinksTerm: $persona}) {
+  post_All(where: {persona: {containsAny: [$persona]}}) {
+    # Strongly typed collections of items based on `Post`content type
+    items {
+      # ...
+    }
+  }
+}
+```
+
+#### Filter blog by multiple conditions (persona and author)
+
+```graphql
+query PostsQuery($persona: String) {
+  post_All(where: { 
+    AND: [ # It is also possible to use OR and create more complex filter queries
+          { persona: {containsAny: [$persona]} },
+          { author: {containsAny: [$author]} }
+    ]
+  }) {
     # Strongly typed collections of items based on `Post`content type
     items {
       # ...
