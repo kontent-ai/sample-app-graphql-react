@@ -78,6 +78,7 @@ This optional section allows you to create your own copy of the project in Konte
 | :--------------------------------: | :------: | :--------------------------------------------------------------------------------------- |
 |    REACT_APP_KONTENT_PROJECT_ID    |    NO    | Project identification                                                                   |
 | REACT_APP_KONTENT_GRAPHQL_ENDPOINT |    NO    | Kontent GraphQL endpoint                                                                 |
+| REACT_APP_KONTENT_PREVIEW_API_KEY  |    NO    | Preview API key to retrieve unpublished content. If set, the application is fetching unpublished content, if not published content is being fetched.                                      |
 |    REACT_APP_GA_ANALYTICS_TOKEN    |    NO    | If you want to inject [Google analytics](https://developers.google.com/analytics) script |
 
 ## Content editing development
