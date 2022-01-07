@@ -137,7 +137,6 @@ function ListingPage(props) {
           })
         );
 
-        // TODO update hardcoded personas and load them from Kontent
         setPersonas([{
             name: "Developer",
             codename: "developer"
