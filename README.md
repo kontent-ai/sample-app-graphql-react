@@ -36,7 +36,7 @@ This optional section allows you to create your own copy of the project in Konte
 
 1. Create an account on Kontent
    - [Create an account on Kontent.ai](https://app.kontent.ai/sign-up?utm_source=nextjs_boilerplate_example&utm_medium=devrel).
-2. After signing up, [create an empty project](https://docs.kontent.ai/tutorials/set-up-kontent/projects/manage-projects#a-creating-projects).
+2. After signing up, [create an empty project](https://kontent.ai/learn/tutorials/manage-kontent/projects/manage-projects#a-create-projects).
 3. Go to the "Project Settings", select API keys and copy the following keys for further reference
    - Project ID
    - Management API key
@@ -52,7 +52,7 @@ This optional section allows you to create your own copy of the project in Konte
    >  kbm --action=restore --projectId=<Project ID> --apiKey=<Management API key> --zipFilename=kontent-backup
    > ```
    >
-   > Go to your Kontent project and [publish the imported items](https://docs.kontent.ai/tutorials/write-and-collaborate/publish-your-work/publish-content-items).
+   > Go to your Kontent project and [publish the imported items](https://kontent.ai/learn/tutorials/write-and-collaborate/publish-your-work/publish-content-items).
 
 ##### Environment variables
 
@@ -91,7 +91,7 @@ npm start
 
 🎉 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying content in Kentico Kontent project. The page auto-updates as you edit the content, but you need to [publish the changes](https://docs.kontent.ai/tutorials/write-and-collaborate/publish-your-work/publish-content-items) in order to see them on site.
+You can start editing the page by modifying content in Kentico Kontent project. The page auto-updates as you edit the content, but you need to [publish the changes](https://kontent.ai/learn/tutorials/write-and-collaborate/publish-your-work/publish-content-items) in order to see them on site.
 
 ### Available Scripts
 
