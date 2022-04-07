@@ -1,7 +1,7 @@
 import { makeStyles, Typography, useTheme } from "@material-ui/core";
 import get from "lodash.get";
 import { Image, Link } from ".";
-import { getUrlFromMapping } from "../utils";
+import { getUrlFromMappingByCodename } from "../utils";
 import RichTextComponent from "./RichTextComponent";
 
 const useStyles = makeStyles((theme) => ({
@@ -50,8 +50,9 @@ function RichText(props) {
       className={classes.richText}
       richTextElement={richTextElement}
       mappings={mappings}
+      // TODO adjust naming and detection linked item vs. component - internal link https://kentico.atlassian.net/browse/DEL-3081
       resolveLinkedItem={(linkedItem, domNode, domToReact) => {
-        switch (linkedItem?.system.type.system.codename) {
+        switch (linkedItem?._system_.type._system_.codename) {
           case "quote":
             return (
               <blockquote className={classes.quote}>
@@ -83,7 +84,7 @@ function RichText(props) {
         );
       }}
       resolveLink={(link, mappings, domNode, domToReact) => {
-        const url = getUrlFromMapping(mappings, link.system.codename);
+        const url = getUrlFromMappingByCodename(mappings, link._system_.codename);
         if (url) {
           return (
             <Link href={url}>

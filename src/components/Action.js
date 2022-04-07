@@ -11,14 +11,14 @@ function Action(props) {
   }
 
   const { action, size } = props;
-  const navigationItem = get(action, "navigationItem.items[0]", null);
-  const href = navigationItem.system.type.codename === "external_url" ?
+  const navigationItem = get(action, "navigationItem", null);
+  const href = navigationItem._system_.type.codename === "external_url" ?
                get(navigationItem, "url") : getHrefFromUrlSlugAndPreserveQueryString(navigationItem);
-  const action_options = get(action, "options", []);
+  const action_options = get(action, "options.items", []);
 
 
-  const role = get(action, "role[0].system.codename", null);
-  const outlined = action_options.some(item => item.system.codename === "outlined");
+  const role = get(action, "role.items[0]._system_.codename", null);
+  const outlined = action_options.some(item => item._system_.codename === "outlined");
   const config = {};
   if (role) {
     config.variant = "contained";
@@ -28,10 +28,10 @@ function Action(props) {
     config.variant = "outlined";
   }
 
-  const new_window = action_options.some(item => item.system.codename === "new_window");
-  const no_follow = action_options.some(item => item.system.codename === "no_follow");
+  const new_window = action_options.some(item => item._system_.codename === "new_window");
+  const no_follow = action_options.some(item => item._system_.codename === "no_follow");
   const icon = get(action, "icon.items[0]", null);
-  const iconPosition = get(icon, "iconPosition[0].system.codename", null);
+  const iconPosition = get(icon, "iconPosition[0]._system_.codename", null);
   const options = {
     target: new_window ? "_blank" : undefined,
     rel: new_window || no_follow

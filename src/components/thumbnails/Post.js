@@ -10,11 +10,11 @@ function Post(props) {
 
   const theme = useTheme();
   const imageSizes = `(min-width: ${theme.breakpoints.values.md}px) ${Math.floor(100 / columnCount)}vw, 100vw`;
-  const image = get(post, "image[0]", null);
+  const image = get(post, "image", null);
   const title = get(post, "title", null);
   const excerpt = get(post, "excerpt", null);
   const publishingDate = get(post, "publishingDate", null);
-  const author = get(post, "author.items[0]", null);
+  const author = get(post, "author", null);
   return (
     <article>
       <div>

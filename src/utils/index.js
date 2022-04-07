@@ -1,18 +1,12 @@
-import getUrlFromMapping from "./getUrlFromMapping";
+import { getUrlFromMappingByCodename, getUrlFromMappingByPathName } from "./getUrlFromMapping";
 import kontentImageLoader from "./kontentImageLoader";
 import srcIsKontentAsset from "./srcIsKontentAsset";
 import getUrlSlug from "./getUrlSlug";
 
 export {
-  getUrlFromMapping,
+  getUrlFromMappingByCodename,
+  getUrlFromMappingByPathName,
   kontentImageLoader,
   srcIsKontentAsset,
   getUrlSlug,
-};
-
-export default {
-  getUrlFromMapping,
-  kontentImageLoader,
-  srcIsKontentAsset,
-  getUrlSlug
 };

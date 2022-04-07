@@ -1,191 +1,230 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
-export const subpageNavigationItemFields = gql`
-    fragment SubpageNavigationItemFields on NavigationItem {
-        system {
-            codename
-        }
-        slug
-        content {
-            items {
-                system {
-                    codename
-                    type {
-                        system {
-                            codename
-                        }
-                    }
-                }
-
-                ... on ListingPage {
-                    contentType
-                }
-            }
-        }
-    }
-`;
-
-export const richTextFields = gql`
-    fragment RichTextFields on RichText {
-        links {
-            items {
-                system {
-                    id
-                    codename
-                    type {
-                        system {
-                            codename
-                        }
-                    }
-                }
-            }
-        }
-        html
-        assets {
-            items {
-                ...AssetFields
-            }
-        }
-        components {
-            items {
-                system {
-                    id
-                    codename
-                    type {
-                        system {
-                            codename
-                        }
-                    }
-                }
-                ... on Quote {
-                    quoteText
-                }
-                ... on CodeBlock {
-                    code {
-                        html
-                    }
-                }
-            }
-        }
-    }
-`;
-
-export const postSeoFields = gql`
-    fragment PostSeoFields on Post {
-        seoCanonicalUrl
-        seoDescription
-        seoKeywords
-        seoOptions {
-            system {
-                codename
-            }
-        }
-        seoTitle
-    }
-`;
-
-export const homePageSeoFields = gql`
-    fragment HomePageSeoFields on Homepage {
-        seoCanonicalUrl
-        seoDescription
-        seoKeywords
-        seoOptions {
-            system {
-                codename
-            }
-        }
-        seoTitle
-    }
-`;
-
-export const navigationSeoFields = gql`
-    fragment NavigationSeoFields on NavigationItem {
-        seoCanonicalUrl
-        seoDescription
-        seoKeywords
-        seoOptions {
-            system {
-                codename
-            }
-        }
-        seoTitle
-    }
-`;
-
-export const actionFields = gql`
-    fragment ActionFields on Action {
-        system {
-            codename
-        }
-        label
-        navigationItem {
-            items {
-                system {
-                    type {
-                        system {
-                            codename
-                        }
-                    }
-                }
-                ... on ExternalUrl {
-                    url
-                }
-                ... on NavigationItem {
-                    ...NavigationSeoFields
-                    label
-                    slug
-                    content {
-                        items {
-                            system {
-                                codename
-                                type {
-                                    system {
-                                        codename
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        options {
-            system {
-                codename
-            }
-        }
-        role {
-            system {
-                codename
-            }
-        }
-        icon {
-            items {
-                ... on Icon {
-                    iconPosition {
-                        system {
-                            codename
-                        }
-                    }
-                    system {
-                        codename
-                    }
-                    icon {
-                        system {
-                            codename
-                        }
-                    }
-                }
-            }
-        }
-    }
+const richTextAssetFields = gql`
+  fragment RichTextAssetFields on _RichTextAsset {
+    url
+    name
+    description
+    imageId
+  }
 `;
 
 export const assetFields = gql`
-    fragment AssetFields on Asset {
-        url
-        name
-        description
-        imageId
+  fragment AssetFields on _Asset {
+    url
+    name
+    description
+  }
+`;
+
+export const subpageNavigationItemFields = gql`
+  fragment SubpageNavigationItemFields on NavigationItem {
+    _system_ {
+      codename
     }
+    slug
+    content {
+      # https://github.com/apollographql/apollo-client/issues/7648#issuecomment-968969367
+      ... on SimplePage {
+        _system_ {
+          codename
+          type {
+            _system_ {
+              codename
+            }
+          }
+        }
+      }
+      ... on LandingPage {
+        _system_ {
+          codename
+          type {
+            _system_ {
+              codename
+            }
+          }
+        }
+      }
+      ... on ListingPage {
+        _system_ {
+          codename
+          type {
+            _system_ {
+              codename
+            }
+          }
+        }
+        contentType
+      }
+    }
+  }
+`;
+
+export const richTextFields = gql`
+  fragment RichTextFields on _RichText {
+    itemHyperlinks {
+      items {
+        _system_ {
+          id
+          codename
+          type {
+            _system_ {
+              codename
+            }
+          }
+        }
+      }
+    }
+    html
+    assets {
+      items {
+        ...RichTextAssetFields
+      }
+    }
+    components {
+      items {
+        _system_ {
+          id
+          codename
+          type {
+            _system_ {
+              codename
+            }
+          }
+        }
+        ... on Quote {
+          quoteText
+        }
+        ... on CodeBlock {
+          code {
+            html
+          }
+        }
+      }
+    }
+  }
+
+  ${richTextAssetFields}
+`;
+
+export const seoFields = gql`
+  fragment SeoFields on Seo {
+    canonicalUrl
+    description
+    keywords
+    options {
+      items {
+        _system_ {
+          codename
+        }
+      }
+    }
+    title
+  }
+`;
+
+export const actionFields = gql`
+  fragment ActionFields on Action {
+    _system_ {
+      codename
+    }
+    label
+    navigationItem {
+      # https://github.com/apollographql/apollo-client/issues/7648#issuecomment-968969367
+      ... on ExternalUrl {
+        _system_ {
+          type {
+            _system_ {
+              codename
+            }
+          }
+        }
+        url
+      }
+      ... on NavigationItem {
+        _system_ {
+          type {
+            _system_ {
+              codename
+            }
+          }
+        }
+        _seo {
+          ...SeoFields
+        }
+        label
+        slug
+        content {
+          # https://github.com/apollographql/apollo-client/issues/7648#issuecomment-968969367
+          ... on SimplePage {
+            _system_ {
+              codename
+              type {
+                _system_ {
+                  codename
+                }
+              }
+            }
+          }
+          ... on LandingPage {
+            _system_ {
+              codename
+              type {
+                _system_ {
+                  codename
+                }
+              }
+            }
+          }
+          ... on ListingPage {
+            _system_ {
+              codename
+              type {
+                _system_ {
+                  codename
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    options {
+      items {
+        _system_ {
+          codename
+        }
+      }
+    }
+    role {
+      items {
+        _system_ {
+          codename
+        }
+      }
+    }
+    icon {
+      ... on Icon {
+        iconPosition {
+          items {
+            _system_ {
+              codename
+            }
+          }
+        }
+        _system_ {
+          codename
+        }
+        icon {
+          items {
+            _system_ {
+              codename
+            }
+          }
+        }
+      }
+    }
+  }
+
+  ${seoFields}
 `;

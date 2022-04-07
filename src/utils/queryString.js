@@ -37,7 +37,7 @@ export const setLanguage = (location, language) => setParameter(location, langua
 
 export const getLanguage = (location) => getParameter(location, languageQueryStringKey);
 
-export const setPersona = (location, language) => setParameter(location, personaQueryStringKey, language);
+export const setPersona = (location, persona) => setParameter(location, personaQueryStringKey, persona);
 
 export const getPersona = (location) => getParameter(location, personaQueryStringKey);
 
