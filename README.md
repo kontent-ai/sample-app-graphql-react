@@ -1,13 +1,12 @@
-# Kontent Sample app GraphQL React
+# Kontent.ai Sample app GraphQL React
 
-[![Node.js CI](https://github.com/Kentico/kontent-sample-app-graphql-react/actions/workflows/node.js.yml/badge.svg)](https://github.com/Kentico/kontent-sample-app-graphql-react/actions/workflows/node.js.yml)
-[![Live Demo](https://img.shields.io/badge/Live-DEMO-brightgreen.svg?logo=github&logoColor=white)](https://kentico.github.io/kontent-sample-app-graphql-react/)
+[![Node.js CI](https://github.com/kontent-ai/sample-app-graphql-react/actions/workflows/node.js.yml/badge.svg)](https://github.com/kontent-ai/sample-app-graphql-react/actions/workflows/node.js.yml)
+[![Live Demo](https://img.shields.io/badge/Live-DEMO-brightgreen.svg?logo=github&logoColor=white)](https://kontent-ai.github.io/sample-app-graphql-react/)
 
-[![GitHub Discussions](https://img.shields.io/badge/GitHub-Discussions-FE7A16.svg?style=popout&logo=github)](https://github.com/Kentico/Home/discussions)
-[![Stack Overflow](https://img.shields.io/badge/Stack%20Overflow-ASK%20NOW-FE7A16.svg?logo=stackoverflow&logoColor=white)](https://stackoverflow.com/tags/kentico-kontent)
-[![Konten Discord](https://img.shields.io/discord/821885171984891914?color=%237289DA&label=Kontent%20Discord&logo=discord)](https://discord.gg/SKCxwPtevJ)
+[![Stack Overflow](https://img.shields.io/badge/Stack%20Overflow-ASK%20NOW-FE7A16.svg?logo=stackoverflow&logoColor=white)](https://stackoverflow.com/tags/kontent-ai)
+[![Konten.ai Discord](https://img.shields.io/discord/821885171984891914?color=%237289DA&label=Kontent.ai%20Discord&logo=discord)](https://discord.gg/SKCxwPtevJ)
 
-This sample app showcase Kontent GraphQL API endpoint usage in combination with React.js using Apollo client.
+This sample app showcase Kontent.ai GraphQL API endpoint usage in combination with React.js using Apollo client.
 
 ## Getting started
 
@@ -28,31 +27,29 @@ npm start
 
 🎉 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-#### (Optional) Create your own data source project in Kontent
+#### (Optional) Create your own data source project in Kontent.ai
 
-This optional section allows you to create your own copy of the project in Kontent so that you can make changes. If you skip this step, the application is connected to the published data of a shared project that is read-only via API for you.
+This optional section allows you to create your own copy of the project in Kontent.ai so that you can make changes. If you skip this step, the application is connected to the published data of a shared project that is read-only via API for you.
 
-##### Create Kontent project
+##### Create Kontent.ai project
 
-1. Create an account on Kontent
+1. Create an account on Kontent.ai
    - [Create an account on Kontent.ai](https://app.kontent.ai/sign-up?utm_source=nextjs_boilerplate_example&utm_medium=devrel).
 2. After signing up, [create an empty project](https://kontent.ai/learn/tutorials/manage-kontent/projects/manage-projects#a-create-projects).
 3. Go to the "Project Settings", select API keys and copy the following keys for further reference
    - Project ID
    - Management API key
-4. Use the [Template Manager UI](https://kentico.github.io/kontent-template-manager/import) for importing the content from [`kontent-backup.zip`](./kontent-backup.zip) file and API keys from the previous step. Check _Publish language variants after import_ option before import.
+4. Use the [Kontent.ai Backup Manager](https://github.com/kontent-ai/backup-manager-js) and import data to the newly created project from [`kontent-backup.zip`](./kontent-backup.zip) file via command line:
 
-   > Alternatively, you can use the [Kontent Backup Manager](https://github.com/Kentico/kontent-backup-manager-js) and import data to the newly created project from [`kontent-backup.zip`](./kontent-backup.zip) file via command line:
-   >
-   > ```sh
-   >  npm i -g @kentico/kontent-backup-manager@3.0.1
-   >  # or
-   >  yarn global add @kentico/kontent-backup-manager@3.0.1
-   >
-   >  kbm --action=restore --projectId=<Project ID> --apiKey=<Management API key> --zipFilename=kontent-backup
-   > ```
-   >
-   > Go to your Kontent project and [publish the imported items](https://kontent.ai/learn/tutorials/write-and-collaborate/publish-your-work/publish-content-items).
+    ```sh
+     npm i -g @kentico/kontent-backup-manager@3.0.1
+     # or
+     yarn global add @kentico/kontent-backup-manager@3.0.1
+   
+     kbm --action=restore --projectId=<Project ID> --apiKey=<Management API key> --zipFilename=kontent-backup
+    ```
+
+5. Go to your Kontent.ai project and [publish the imported items](https://kontent.ai/learn/tutorials/write-and-collaborate/publish-your-work/publish-content-items).
 
 ##### Environment variables
 
@@ -72,12 +69,12 @@ This optional section allows you to create your own copy of the project in Konte
 
 🎉 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-> By default, the content is loaded from a shared Kentico Kontent project. If you want to use your own clone of the project so that you can customize it and experiment with Kontent, continue to the next section.
+> By default, the content is loaded from a shared Kontent.ai project. If you want to use your own clone of the project so that you can customize it and experiment with Kontent, continue to the next section.
 
 |              Variable              | Required | Description                                                                              |
 | :--------------------------------: | :------: | :--------------------------------------------------------------------------------------- |
 |    REACT_APP_KONTENT_PROJECT_ID    |    NO    | Project identification                                                                   |
-| REACT_APP_KONTENT_GRAPHQL_ENDPOINT |    NO    | Kontent GraphQL endpoint                                                                 |
+| REACT_APP_KONTENT_GRAPHQL_ENDPOINT |    NO    | Kontent.ai GraphQL endpoint                                                                 |
 | REACT_APP_KONTENT_PREVIEW_API_KEY  |    NO    | Preview API key to retrieve unpublished content. If set, the application is fetching unpublished content, if not published content is being fetched.                                      |
 |    REACT_APP_GA_ANALYTICS_TOKEN    |    NO    | If you want to inject [Google analytics](https://developers.google.com/analytics) script |
 
@@ -91,7 +88,7 @@ npm start
 
 🎉 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying content in Kentico Kontent project. The page auto-updates as you edit the content, but you need to [publish the changes](https://kontent.ai/learn/tutorials/write-and-collaborate/publish-your-work/publish-content-items) in order to see them on site.
+You can start editing the page by modifying content in Kontent.ai project. The page auto-updates as you edit the content, but you need to [publish the changes](https://kontent.ai/learn/tutorials/write-and-collaborate/publish-your-work/publish-content-items) in order to see them on site.
 
 ### Available Scripts
 

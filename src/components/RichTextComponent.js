@@ -16,7 +16,7 @@ function isLink(domNode) {
   return domNode.name === "a" && typeof domNode.attribs?.[LINKED_ITEM_ID_ATTRIBUTE_IDENTIFIER] !== "undefined";
 }
 
-// TODO adjust naming and detection linked item vs. component - internal link https://kentico.atlassian.net/browse/DEL-3081
+// TODO adjust naming and detection linked item vs. component - internal link https://kontent-ai.atlassian.net/browse/DEL-3081
 function replaceNode(domNode, richTextElement, linkedItems, mappings, resolveLinkedItem, resolveImage, resolveLink, resolveDomNode) {
   const { assets, itemHyperlinks } = richTextElement;
 
@@ -49,7 +49,7 @@ function replaceNode(domNode, richTextElement, linkedItems, mappings, resolveLin
   }
 }
 
-// TODO enhance this component to be able to consume components as well ass linked items - internal link https://kentico.atlassian.net/browse/DEL-3081
+// TODO enhance this component to be able to consume components as well ass linked items - internal link https://kontent.atlassian.net/browse/DEL-3081
 function RichTextComponent({ richTextElement, mappings, resolveLinkedItem, resolveImage, resolveLink, resolveDomNode, className }) {
   const cleanedValue = richTextElement.html.replace(/(\n|\r)+/, "");
   // currenlty resolving only components
