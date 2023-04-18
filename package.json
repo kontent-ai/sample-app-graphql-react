@@ -9,12 +9,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -32,6 +26,8 @@
     "@kentico/kontent-delivery": "^11.0.0",
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
+    "@pokornyd/kontent-ai-rich-text-parser": "^0.1.10",
+    "@portabletext/react": "^2.0.2",
     "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
@@ -48,7 +44,7 @@
     "react-ga": "^3.3.0",
     "react-helmet-async": "^1.0.9",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
+    "react-scripts": "5.0.1",
     "web-vitals": "^1.0.1"
   }
 }

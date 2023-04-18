@@ -4,7 +4,7 @@ import ReactGA from 'react-ga';
 import App from './App';
 import { HelmetProvider } from 'react-helmet-async';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-import { name, version } from "../package.json";
+import packageInfo from "../package.json";
 
 const PREVIEW_API_KEY = process.env.REACT_APP_KONTENT_PREVIEW_API_KEY;
 const GQL_ENDPOINT = process.env.REACT_APP_KONTENT_GRAPHQL_ENDPOINT ||
@@ -29,7 +29,7 @@ const client = new ApolloClient({
     }),
     uri: `${GQL_ENDPOINT}/${PROJECT_ID}`,
     headers: Object.assign({
-        'X-KC-SOURCE': `${name};${version}`
+        'X-KC-SOURCE': `${packageInfo.name};${packageInfo.version}`
     }, authorizationHeader)
 });
 
