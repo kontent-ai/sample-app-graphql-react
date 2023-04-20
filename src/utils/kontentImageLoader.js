@@ -1,4 +1,4 @@
-import { transformImageUrl } from '@kentico/kontent-delivery';
+import { transformImageUrl } from '@kontent-ai/delivery-sdk';
 
 
 const kontentImageLoader = ({ src, width, quality }) => {

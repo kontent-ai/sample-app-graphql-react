@@ -2,7 +2,7 @@ import { makeStyles, Typography, useTheme } from "@material-ui/core";
 import get from "lodash.get";
 import { Image, Link } from ".";
 import { getUrlFromMappingByCodename } from "../utils";
-import { PortableText, PortableTextReactComponents, toPlainText } from '@portabletext/react';
+import { PortableText, } from '@portabletext/react';
 import { browserParse, transformToPortableText, resolveTable } from '@pokornyd/kontent-ai-rich-text-parser';
 
 const useStyles = makeStyles((theme) => ({
@@ -48,6 +48,9 @@ function RichText(props) {
 
   const portableTextComponents = {
     types: {
+      // image: () => {
+
+      // },
       component: (block) => {
         const linkedItem = richTextElement.components.items.find(item => item._system_.codename === block.value.component._ref);
         const contentItemType = linkedItem ? linkedItem._system_.type._system_.codename : '';
@@ -72,10 +75,29 @@ function RichText(props) {
             return <div>Content item not supported</div>;
         }
       },
-      // table: ({ value }) => {
-      //   const tableString = resolveTable(value, toPlainText);
-      //   return <>{tableString}</>;
-      // }
+      table: ({ value }) => {
+        const table = (
+          <table>
+            {
+              value.rows.map(row => (
+                <tr>
+                  {row.cells.map(cell => {
+                    return (
+                      <td>
+                        <PortableText
+                          value={cell.content}
+                          components={portableTextComponents}
+                        />
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))
+            }
+          </table>
+        );
+        return table;
+      }
     },
     marks: {
       link: ({ value, children }) => {
@@ -86,14 +108,22 @@ function RichText(props) {
           </a>
         )
       },
-      // internalLink: ({ value, children }) => {
-      //   const link = props.element.links.find(link => link.linkId == value.reference._ref);
-      //   return (
-      //     <a href={"https://somerandomwebsite.xyz/" + link?.urlSlug || link?.codename}>
-      //       {children}
-      //     </a>
-      //   )
-      // }
+      internalLink: ({ value, children }) => {
+        const link = richTextElement.itemHyperlinks.items.find(link => link?._system_.id == value.reference._ref);
+        const url = getUrlFromMappingByCodename(mappings, link._system_.codename);
+        if (url) {
+          return (
+            <Link href={url}>
+              {children}
+            </Link>
+          );
+        }
+        else {
+          return (
+            <del>{children}</del>
+          );
+        }
+      }
     }
   }
 
