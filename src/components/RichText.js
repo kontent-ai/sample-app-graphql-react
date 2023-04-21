@@ -3,7 +3,7 @@ import get from "lodash.get";
 import { Image, Link } from ".";
 import { getUrlFromMappingByCodename } from "../utils";
 import { PortableText, } from '@portabletext/react';
-import { browserParse, transformToPortableText, resolveTable } from '@pokornyd/kontent-ai-rich-text-parser';
+import { browserParse, transformToPortableText } from '@kontent-ai/rich-text-resolver';
 
 const useStyles = makeStyles((theme) => ({
   richText: {
@@ -135,64 +135,6 @@ function RichText(props) {
       className={classes.richText}
       value={portableText}
       components={portableTextComponents} />
-
-
-    // <RichTextComponent
-    //   className={classes.richText}
-    //   richTextElement={richTextElement}
-    //   mappings={mappings}
-    //   // TODO adjust naming and detection linked item vs. component - internal link https://kontent-ai.atlassian.net/browse/DEL-3081
-    //   resolveLinkedItem={(linkedItem, domNode, domToReact) => {
-    //     switch (linkedItem?._system_.type._system_.codename) {
-    //       case "quote":
-    //         return (
-    //           <blockquote className={classes.quote}>
-    //             &ldquo;{linkedItem.quoteText}&rdquo;
-    //           </blockquote>
-    //         );
-    //       case "code_block":
-    //         return (
-    //           <Typography component="div" className={classes.code}>
-    //             <RichText
-    //               {...props}
-    //               richTextElement={get(linkedItem, "code", null)}
-    //             />
-    //           </Typography>
-    //         );
-    //       default:
-    //         return domToReact([domNode]);
-    //     }
-    //   }}
-    //   resolveImage={(image, _domNode, _domToReact) => {
-    //     return (
-    //       <div className={classes.inlineImage}>
-    //         <Image
-    //           sizes={`${theme.breakpoints.values.sm}px`}
-    //           asset={image}
-    //           width={theme.breakpoints.values.sm}
-    //           alt={image.description || image.name} />
-    //       </div>
-    //     );
-    //   }}
-    //   resolveLink={(link, mappings, domNode, domToReact) => {
-    //     const url = getUrlFromMappingByCodename(mappings, link._system_.codename);
-    //     if (url) {
-    //       return (
-    //         <Link href={url}>
-    //           {domNode.children[0].data}
-    //         </Link>
-    //       );
-    //     }
-    //     else {
-    //       return (
-    //         <del>{domToReact([domNode])}</del>
-    //       );
-    //     }
-    //   }}
-    //   resolveDomNode={(domNode, _domToReact) => {
-    //     return domNode;
-    //   }}
-    // />
   );
 }
 

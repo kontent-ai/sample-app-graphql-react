@@ -26,7 +26,7 @@
     "@kontent-ai/delivery-sdk": "^14.0.1",
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
-    "@pokornyd/kontent-ai-rich-text-parser": "^0.1.10",
+    "@kontent-ai/rich-text-resolver": "^0.0.2",
     "@portabletext/react": "^2.0.2",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^12.1.5",
