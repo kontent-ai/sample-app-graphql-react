@@ -1,7 +1,7 @@
 {
   "name": "@kentico/kontent-sample-app-graphql-react",
   "version": "0.1.0",
-  "homepage": "https://kentico.github.io/kontent-sample-app-graphql-react/",
+  "homepage": ".",
   "license": "MIT",
   "scripts": {
     "start": "react-scripts start",
