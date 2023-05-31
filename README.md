@@ -2,6 +2,7 @@
 
 [![Node.js CI](https://github.com/kontent-ai/sample-app-graphql-react/actions/workflows/node.js.yml/badge.svg)](https://github.com/kontent-ai/sample-app-graphql-react/actions/workflows/node.js.yml)
 [![Live Demo](https://img.shields.io/badge/Live-DEMO-brightgreen.svg?logo=github&logoColor=white)](https://kontent-ai.github.io/sample-app-graphql-react/)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/500af2e7-5312-47d8-af3c-16534378aa21/deploy-status)](https://app.netlify.com/sites/sample-app-graphql-react/deploys)
 
 [![Stack Overflow](https://img.shields.io/badge/Stack%20Overflow-ASK%20NOW-FE7A16.svg?logo=stackoverflow&logoColor=white)](https://stackoverflow.com/tags/kontent-ai)
 [![Konten.ai Discord](https://img.shields.io/discord/821885171984891914?color=%237289DA&label=Kontent.ai%20Discord&logo=discord)](https://discord.gg/SKCxwPtevJ)

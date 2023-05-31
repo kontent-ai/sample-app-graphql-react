@@ -2,7 +2,8 @@ import { makeStyles, Typography, useTheme } from "@material-ui/core";
 import get from "lodash.get";
 import { Image, Link } from ".";
 import { getUrlFromMappingByCodename } from "../utils";
-import RichTextComponent from "./RichTextComponent";
+import { PortableText, } from '@portabletext/react';
+import { browserParse, transformToPortableText } from '@kontent-ai/rich-text-resolver';
 
 const useStyles = makeStyles((theme) => ({
   richText: {
@@ -45,14 +46,16 @@ function RichText(props) {
   const classes = useStyles();
   const theme = useTheme();
 
-  return (
-    <RichTextComponent
-      className={classes.richText}
-      richTextElement={richTextElement}
-      mappings={mappings}
-      // TODO adjust naming and detection linked item vs. component - internal link https://kontent-ai.atlassian.net/browse/DEL-3081
-      resolveLinkedItem={(linkedItem, domNode, domToReact) => {
-        switch (linkedItem?._system_.type._system_.codename) {
+  const portableTextComponents = {
+    types: {
+      // image: () => {
+
+      // },
+      component: (block) => {
+        const linkedItem = richTextElement.components.items.find(item => item._system_.codename === block.value.component._ref);
+        const contentItemType = linkedItem ? linkedItem._system_.type._system_.codename : '';
+
+        switch (contentItemType) {
           case "quote":
             return (
               <blockquote className={classes.quote}>
@@ -69,39 +72,69 @@ function RichText(props) {
               </Typography>
             );
           default:
-            return domToReact([domNode]);
+            return <div>Content item not supported</div>;
         }
-      }}
-      resolveImage={(image, _domNode, _domToReact) => {
-        return (
-          <div className={classes.inlineImage}>
-            <Image
-              sizes={`${theme.breakpoints.values.sm}px`}
-              asset={image}
-              width={theme.breakpoints.values.sm}
-              alt={image.description || image.name} />
-          </div>
+      },
+      table: ({ value }) => {
+        const table = (
+          <table>
+            {
+              value.rows.map(row => (
+                <tr>
+                  {row.cells.map(cell => {
+                    return (
+                      <td>
+                        <PortableText
+                          value={cell.content}
+                          components={portableTextComponents}
+                        />
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))
+            }
+          </table>
         );
-      }}
-      resolveLink={(link, mappings, domNode, domToReact) => {
+        return table;
+      }
+    },
+    marks: {
+      link: ({ value, children }) => {
+        const target = (value?.href || '').startsWith('http') ? '_blank' : undefined
+        return (
+          <a href={value?.href} target={target} rel={value?.rel} title={value?.title} data-new-window={value['data-new-window']}>
+            {children}
+          </a>
+        )
+      },
+      internalLink: ({ value, children }) => {
+        const link = richTextElement.itemHyperlinks.items.find(link => link?._system_.id == value.reference._ref);
         const url = getUrlFromMappingByCodename(mappings, link._system_.codename);
         if (url) {
           return (
             <Link href={url}>
-              {domNode.children[0].data}
+              {children}
             </Link>
           );
         }
         else {
           return (
-            <del>{domToReact([domNode])}</del>
+            <del>{children}</del>
           );
         }
-      }}
-      resolveDomNode={(domNode, _domToReact) => {
-        return domNode;
-      }}
-    />
+      }
+    }
+  }
+
+  const parsedTree = browserParse(richTextElement.html);
+  const portableText = transformToPortableText(parsedTree);
+
+  return (
+    <PortableText
+      className={classes.richText}
+      value={portableText}
+      components={portableTextComponents} />
   );
 }
 
